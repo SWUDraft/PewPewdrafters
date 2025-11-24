@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (JSON Fix)</title>
+    <title>SWU: GitHub Drafter (Robust Parser)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -119,7 +119,6 @@
         .col-special { width: 180px; min-width: 180px; border: 1px solid #666; }
         .col-pool { width: 180px; min-width: 180px; border: 1px solid #644; background: rgba(35, 20, 20, 0.95); }
 
-        /* COLLAPSED STATE */
         .column.collapsed { min-width: 40px; width: 40px; background: #111; border-color: #333; }
         .column.collapsed .col-content { display: none; }
         .column.collapsed .col-header { 
@@ -148,7 +147,6 @@
         .ch-Leader { border-bottom-color: var(--c-leader); color: var(--c-leader); }
         .ch-Base { border-bottom-color: var(--c-base); color: var(--c-base); }
         .ch-Pool { border-bottom-color: var(--c-pool); color: #faa; }
-        
         .ch-Aggression { border-bottom-color: var(--c-Aggression); color: var(--c-Aggression); }
         .ch-Command { border-bottom-color: var(--c-Command); color: var(--c-Command); }
         .ch-Cunning { border-bottom-color: var(--c-Cunning); color: var(--c-Cunning); }
@@ -156,7 +154,6 @@
         .ch-Villainy { border-bottom-color: var(--c-Villainy); color: #999; }
         .ch-Heroism { border-bottom-color: var(--c-Heroism); color: #fff; }
         .ch-Neutral { border-bottom-color: var(--c-Neutral); color: #bbb; }
-
         .ch-Common { border-bottom-color: var(--c-Common); color: var(--c-Common); }
         .ch-Uncommon { border-bottom-color: var(--c-Uncommon); color: var(--c-Uncommon); }
         .ch-Rare { border-bottom-color: var(--c-Rare); color: var(--c-Rare); }
@@ -189,15 +186,8 @@
         }
         .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -140px; }
         #list-Pool .card-item, #list-Leader .card-item, #list-Base .card-item { margin-top: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        
-        .card-item:hover { 
-            transform: scale(1.15); 
-            z-index: 1000 !important; 
-            box-shadow: 0 0 25px rgba(0,0,0,0.9); 
-            border-color: var(--accent); 
-        }
+        .card-item:hover { transform: scale(1.15); z-index: 1000 !important; box-shadow: 0 0 25px rgba(0,0,0,0.9); border-color: var(--accent); }
         .card-item img { width: 100%; height: auto; display: block; border-radius: 8px; pointer-events: none; }
-
         .card-actions { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; border-radius: 8px; backdrop-filter: blur(2px); }
         .card-item:hover .card-actions { display: flex; }
         .add-icon { font-size: 30px; color: var(--accent); font-weight: 900; pointer-events: none; background: rgba(0,0,0,0.8); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
@@ -206,21 +196,12 @@
         /* --- OVERLAYS --- */
         #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 4000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center; }
         #upload-zone { border: 2px dashed #555; padding: 40px; border-radius: 10px; background: #222; margin-top: 20px; }
-        
         #preview-tooltip { position: fixed; display: none; z-index: 5000; pointer-events: none; background: rgba(0,0,0,0.8); border: 2px solid #555; border-radius: 8px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.9); overflow: hidden; }
         #preview-tooltip img { width: 340px; display: block; }
         #preview-tooltip.big-preview img { width: auto; height: 65vh; max-width: none; }
-        
         #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; justify-content:center; align-items:center; flex-direction: column; }
         #modal img { max-width:90vw; max-height:70vh; border-radius: 12px; display: block; box-shadow: 0 0 50px #000; border: 2px solid #333; }
-        
-        .big-flip-btn { 
-            background: var(--accent); color: #000; 
-            font-family: 'Orbitron'; font-size: 20px; font-weight: 900; 
-            padding: 15px 40px; border: 3px solid #000; border-radius: 8px; 
-            cursor: pointer; box-shadow: 0 0 20px var(--accent); margin-top: 20px; 
-        }
-        
+        .big-flip-btn { background: var(--accent); color: #000; font-family: 'Orbitron'; font-size: 20px; font-weight: 900; padding: 15px 40px; border: 3px solid #000; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px var(--accent); margin-top: 20px; }
         #toast { visibility: hidden; min-width: 200px; background-color: #222; color: var(--accent); text-align: center; border-radius: 4px; padding: 15px; position: fixed; z-index: 3000; left: 50%; bottom: 40px; transform: translateX(-50%); font-family: 'Orbitron'; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(0,0,0,0.8); font-weight: bold; }
         #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 40px; opacity: 1;} }
@@ -250,10 +231,8 @@
                 <option value="SOR">Spark of Rebellion (SOR)</option>
                 <option value="SHD">Shadows of the Galaxy (SHD)</option>
             </select>
-            
             <label style="color:#777; font-size:11px; margin-left:5px; text-transform:uppercase; font-weight:bold;">Packs:</label>
             <input type="number" id="packCount" value="6" min="1" max="24">
-            
             <button class="btn btn-action" id="btn-open" onclick="openPacks()">OPEN PACKS</button>
             <button class="btn" id="btn-sort" onclick="toggleSort()">SORT: COST</button>
             <button class="btn btn-reset" onclick="resetDatabase()">RESET DB</button>
@@ -324,17 +303,62 @@ function handleFileSelect(files) {
 }
 
 function parseCSVandInstall(csvText) {
-    const lines = csvText.split(/\r\n|\n/);
-    if(lines.length < 2) { alert("File seems empty."); return; }
+    // --- ROBUST PARSER START ---
+    const rows = [];
+    let currentRow = [];
+    let currentVal = '';
+    let insideQuote = false;
     
-    const firstLine = lines[0];
+    // Auto-detect delimiter (Comma or Semicolon) from first line
+    let firstLineEnd = csvText.indexOf('\n');
+    if(firstLineEnd === -1) firstLineEnd = csvText.length;
+    const firstLine = csvText.substring(0, firstLineEnd);
     const delim = firstLine.includes(';') ? ';' : ',';
+
+    for (let i = 0; i < csvText.length; i++) {
+        const char = csvText[i];
+        const nextChar = csvText[i+1];
+
+        if (char === '"') {
+            if (insideQuote && nextChar === '"') {
+                currentVal += '"';
+                i++; 
+            } else {
+                insideQuote = !insideQuote;
+            }
+        } else if (char === delim && !insideQuote) {
+            currentRow.push(currentVal.trim());
+            currentVal = '';
+        } else if ((char === '\n' || char === '\r') && !insideQuote) {
+            if (char === '\r' && nextChar === '\n') i++;
+            currentRow.push(currentVal.trim());
+            if (currentRow.length > 1) rows.push(currentRow);
+            currentRow = [];
+            currentVal = '';
+        } else {
+            currentVal += char;
+        }
+    }
+    if (currentRow.length > 1) rows.push(currentRow);
+    // --- ROBUST PARSER END ---
+
+    if(rows.length < 2) { alert("File seems empty or invalid format."); return; }
     
-    const h = firstLine.split(delim);
-    const m = {}; h.forEach((v,i)=>m[v.trim().replace(/"/g,'')]=i); 
+    const h = rows[0];
+    const m = {}; 
+    h.forEach((v,i) => m[v.replace(/^"|"$/g, '').trim()] = i); 
     
-    if(m['Card ID'] === undefined || m['Cost'] === undefined) {
-        alert("Error: Missing 'Card ID' or 'Cost' columns.");
+    // Loose check for columns to be safe
+    let idIdx = -1, costIdx = -1, setIdx = -1, typeIdx = -1;
+    Object.keys(m).forEach(k => {
+        if(k.includes('Card ID')) idIdx = m[k];
+        if(k === 'Cost') costIdx = m[k];
+        if(k.includes('Source')) setIdx = m[k];
+        if(k.includes('Type')) typeIdx = m[k];
+    });
+
+    if(idIdx === -1 || costIdx === -1) {
+        alert("Error: Could not identify 'Card ID' or 'Cost' columns. Please check CSV headers.");
         return;
     }
 
@@ -343,18 +367,18 @@ function parseCSVandInstall(csvText) {
     const db = {};
     let count = 0;
 
-    for(let i=1; i<lines.length; i++) {
-        const row = parseCSVLine(lines[i], delim); 
-        if(!row || row.length < h.length) continue;
+    for(let i=1; i<rows.length; i++) {
+        const row = rows[i];
+        if(row.length < h.length) continue;
         
-        const rawSet = row[m['Source_Sheet']];
+        const rawSet = row[setIdx];
         if(!setMap[rawSet]) continue;
         const setCode = setMap[rawSet];
 
-        const id = row[m['Card ID']].split('.')[0].padStart(3, '0');
+        const id = row[idIdx].split('.')[0].padStart(3, '0');
         const name = row[m['Card Name']];
-        const typeRaw = row[m['Type(s)']] || "Unit";
-        const cost = parseInt(row[m['Cost']]) || 0;
+        const typeRaw = row[typeIdx] || "Unit";
+        const cost = parseInt(row[costIdx]) || 0;
         
         // Rarity
         let rarVal = row[m['Rarity']] ? row[m['Rarity']].trim().toUpperCase() : "C";
@@ -393,18 +417,6 @@ function parseCSVandInstall(csvText) {
     try { localStorage.setItem('SWU_DB', JSON.stringify(db)); } catch(e){}
     document.getElementById('loading-overlay').style.display = 'none';
     initBoard();
-}
-
-function parseCSVLine(text, delim) {
-    const re = new RegExp(`(?!\\s*$)\\s*(?:'([^']*)'|"([^"]*)"|([^,'"${delim}\\s\\\\]*(?:\\s+[^,'"${delim}\\s\\\\]+)*))\\s*(?:${delim}|$)`, 'g');
-    const a = [];
-    text.replace(re, (m0,m1,m2,m3) => {
-        if(m1!==undefined) a.push(m1.replace(/\\'/g,"'"));
-        else if(m2!==undefined) a.push(m2.replace(/\\"/g,'"'));
-        else if(m3!==undefined) a.push(m3);
-        return '';
-    });
-    return a;
 }
 
 function updateDBStatus() {
@@ -599,27 +611,17 @@ function handleDropOnBoard(e, cn) {
     } catch(e){}
 }
 
-// --- JSON EXPORT FIX (FORCE TABLE / SWUDB) ---
 function copyJSON() { 
     const d={metadata:{name:"Draft Deck",author:"SWU Drafter"},leader:null,base:null,deck:[],sideboard:[]};
     Object.values(myDeck).forEach(c=>{ 
-        // FORMAT: SET_### (Uppercase)
         const pid = `${c.set.toUpperCase()}_${c.id}`;
         const entry = {id: pid, count: c.count}; 
-        
         if(c.type==='Leader') { d.leader = entry; } 
         else if(c.type==='Base') { d.base = entry; } 
         else d.deck.push(entry); 
     });
-    
-    // Create hidden textarea for copy
-    const el=document.createElement('textarea'); 
-    el.value=JSON.stringify(d,null,2); 
-    document.body.appendChild(el); 
-    el.select(); 
-    document.execCommand('copy'); 
-    document.body.removeChild(el); 
-    
+    const el=document.createElement('textarea'); el.value=JSON.stringify(d,null,2); 
+    document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
     playAudio('snd-copy'); 
     const t = document.getElementById('toast');
     t.className = 'show'; setTimeout(()=>t.className='', 2000);
