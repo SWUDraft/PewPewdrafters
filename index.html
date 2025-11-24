@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Rarity Update)</title>
+    <title>SWU: GitHub Drafter (Rarity & Neutral Fix)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -11,7 +11,7 @@
         :root {
             --bg: #121212;
             --panel: #1e1e1e;
-            --accent: #FFE81F; /* SW Yellow */
+            --accent: #FFE81F; 
             --text-main: #e0e0e0;
             
             /* SWU Aspect Colors */
@@ -24,11 +24,11 @@
             --c-Neutral: #555555;
 
             /* Rarity Colors */
-            --c-Common: #cccccc;
+            --c-Common: #aaaaaa;
             --c-Uncommon: #55aaff;
             --c-Rare: #ffcc00;
             --c-Legendary: #aa55ff;
-            --c-Special: #ff5555;
+            --c-Special: #ff4444;
 
             /* Types */
             --c-leader: #fff; --c-base: #aaa; --c-unit: #444; --c-pool: #402020; 
@@ -257,23 +257,33 @@ function parseCSVandInstall(csvText) {
         const keywords = row[m['Keyword(s)']] || "";
         const traits = row[m['Trait(s)']] || "";
         
-        // Rarity Logic
-        const rarRaw = row[m['Rarity']] || "Common";
+        // --- RARITY FIX ---
+        // Vi trimmer og tager første bogstav for at være sikre
+        let rarVal = row[m['Rarity']] ? row[m['Rarity']].trim().toUpperCase() : "C";
+        if(rarVal.length > 1) rarVal = rarVal.charAt(0); // Tager kun C, U, R, L, S
+        
         let rarity = "Common";
-        if(rarRaw.startsWith('C')) rarity = "Common";
-        else if(rarRaw.startsWith('U')) rarity = "Uncommon";
-        else if(rarRaw.startsWith('R')) rarity = "Rare";
-        else if(rarRaw.startsWith('L')) rarity = "Legendary";
-        else if(rarRaw.startsWith('S')) rarity = "Special";
+        if(rarVal === 'C') rarity = "Common";
+        else if(rarVal === 'U') rarity = "Uncommon";
+        else if(rarVal === 'R') rarity = "Rare";
+        else if(rarVal === 'L') rarity = "Legendary";
+        else if(rarVal === 'S') rarity = "Special";
 
-        // Aspect Logic
+        // --- NEUTRAL FIX ---
+        // Hvis den ikke har en af hovedfarverne, og heller ikke er Villainy/Heroism, så er den Neutral
         const a1 = row[m['Aspect(s)']] || "";
         const a2 = row[m['Unnamed: 12']] || ""; 
+        
         let asp = "Neutral"; 
-        if(mainAspects.includes(a1)) asp = a1; 
-        else if(mainAspects.includes(a2)) asp = a2;
-        else if(a1 === "Villainy" || a1 === "Heroism") asp = a1; 
-        else if(a2 === "Villainy" || a2 === "Heroism") asp = a2;
+        
+        // Prioritet: Color > Align > Neutral
+        if(mainAspects.includes(a1) || mainAspects.includes(a2)) {
+            if(mainAspects.includes(a1)) asp = a1; else asp = a2;
+        } 
+        else if(a1 === "Villainy" || a1 === "Heroism" || a2 === "Villainy" || a2 === "Heroism") {
+            if(a1 === "Villainy" || a1 === "Heroism") asp = a1; else asp = a2;
+        }
+        // Ellers forbliver den "Neutral"
         
         const img = `https://swudb.com/images/cards/${setCode}/${id}.png`;
         const cardObj = { id, set: setCode, name, cost: cost.toString(), aspect: asp, rarity: rarity, img, keywords, traits };
@@ -328,7 +338,6 @@ function openPacks() {
         for(let k=0; k<14; k++) {
             if(d.deck.length) {
                 const c = d.deck[Math.floor(Math.random()*d.deck.length)];
-                // Bestem kolonne
                 let col;
                 if (currentSortMode === 'cost') col = getCostColumn(c.cost);
                 else if (currentSortMode === 'rarity') col = c.rarity;
@@ -361,6 +370,7 @@ function initBoard() {
         else if(cn==="Base") hc="ch-Base"; 
         else if(ASPECT_COLS.includes(cn)) hc=`ch-${cn}`;
         else if(RARITY_COLS.includes(cn)) hc=`ch-${cn}`;
+        else if(cn==="Neutral") hc="ch-Neutral";
         
         c.innerHTML = `<div class="col-header ${hc}">${cn}</div><div class="col-content" id="list-${cn}"></div>`;
         b.appendChild(c);
