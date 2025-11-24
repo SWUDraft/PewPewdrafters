@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Robust Parser)</title>
+    <title>SWU: GitHub Drafter (Save & Layout Fix)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -11,86 +11,51 @@
         :root {
             --bg: #121212;
             --panel: #1e1e1e;
-            --accent: #FFE81F; /* Star Wars Yellow */
+            --accent: #FFE81F; 
             --accent-glow: rgba(255, 232, 31, 0.4);
             --text-main: #e0e0e0;
             
-            /* SWU Aspect Colors */
-            --c-Aggression: #bd1e2d; 
-            --c-Command: #377d22;    
-            --c-Cunning: #f2c035;    
-            --c-Vigilance: #006eb6;  
-            --c-Villainy: #222222;   
-            --c-Heroism: #eeeeee;
-            --c-Neutral: #555555;
+            --c-Aggression: #bd1e2d; --c-Command: #377d22; --c-Cunning: #f2c035;    
+            --c-Vigilance: #006eb6; --c-Villainy: #222222; --c-Heroism: #eeeeee; --c-Neutral: #555555;
 
-            /* Rarity Colors */
-            --c-Common: #aaaaaa; 
-            --c-Uncommon: #55aaff; 
-            --c-Rare: #ffcc00;
-            --c-Legendary: #aa55ff; 
-            --c-Special: #ff4444;
+            --c-Common: #aaaaaa; --c-Uncommon: #55aaff; --c-Rare: #ffcc00;
+            --c-Legendary: #aa55ff; --c-Special: #ff4444;
 
-            /* Types */
             --c-leader: #fff; --c-base: #aaa; --c-unit: #444; --c-pool: #402020; 
             --success-green: #0a0;
         }
 
         body { background: var(--bg); color: var(--text-main); font-family: 'Rajdhani', sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (Z-INDEX FIX) --- */
         header { 
             padding: 10px 20px; 
             background: #080808; 
             border-bottom: 2px solid #333; 
             display: flex; align-items: center; justify-content: space-between; 
-            height: 70px; z-index: 10; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            height: 70px; 
+            z-index: 5000; /* FIX: Meget høj Z-index så intet går over */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.9);
+            position: relative;
         }
         h1 { margin: 0; font-family: 'Orbitron'; color: var(--accent); font-size: 22px; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-glow); margin-right: 20px; }
         
         .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
         
         select, input { 
-            background: #1a1a1a; 
-            color: var(--accent); 
-            border: 1px solid #444; 
-            padding: 8px 12px; 
-            font-family: 'Orbitron'; 
-            font-size: 14px; 
-            border-radius: 4px; 
-            outline: none;
-            transition: 0.3s;
+            background: #1a1a1a; color: var(--accent); border: 1px solid #444; padding: 8px 12px; 
+            font-family: 'Orbitron'; font-size: 14px; border-radius: 4px; outline: none; transition: 0.3s; 
         }
         select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
         input[type="number"] { width: 60px; text-align: center; font-weight: bold; }
         
-        /* BUTTONS */
         button.btn { 
-            background: linear-gradient(180deg, #3a3a3a 0%, #222 100%); 
-            color: #fff; 
-            border: 1px solid #555; 
-            padding: 8px 20px; 
-            font-family: 'Orbitron'; 
-            cursor: pointer; 
-            transition: all 0.2s ease-in-out; 
-            border-radius: 4px; 
-            font-size: 12px; 
-            font-weight: 700;
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            background: linear-gradient(180deg, #3a3a3a 0%, #222 100%); color: #fff; border: 1px solid #555; 
+            padding: 8px 20px; font-family: 'Orbitron'; cursor: pointer; transition: all 0.2s ease-in-out; 
+            border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
-        
-        button.btn:hover { 
-            border-color: var(--accent); 
-            color: var(--accent); 
-            background: linear-gradient(180deg, #444 0%, #111 100%); 
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-        
+        button.btn:hover { border-color: var(--accent); color: var(--accent); background: linear-gradient(180deg, #444 0%, #111 100%); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
         button.btn:active { transform: translateY(1px); box-shadow: none; }
         button.btn:disabled { color: #555; border-color: #333; cursor: wait; opacity: 0.6; transform: none; box-shadow: none; }
         
@@ -98,13 +63,16 @@
         button.btn-reset { background: #311; border-color: #522; color: #a88; }
         button.btn-reset:hover { background: #511; border-color: #f55; color: #fff; box-shadow: 0 0 10px rgba(255,0,0,0.4); }
 
+        /* Save/Load Buttons */
+        .btn-save { background: #131; border-color: #252; color: #ada; width: 48%; }
+        .btn-load { background: #113; border-color: #225; color: #aad; width: 48%; }
+
         .stat { font-family: 'Orbitron'; font-size: 14px; color: #aaa; margin-right: 20px; letter-spacing: 1px; }
         .stat span { color: var(--accent); font-size: 18px; }
-        
         #db-status { font-size: 11px; color: #777; font-family: monospace; border: 1px solid #333; padding: 4px 8px; border-radius: 4px; background: #111; }
 
         /* --- MAIN AREA --- */
-        #main-area { display: flex; flex: 1; overflow: hidden; position: relative; }
+        #main-area { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
         #board { flex: 1; display: flex; gap: 12px; padding: 20px; overflow-x: auto; background: url('https://swudb.com/images/background.jpg') center/cover fixed no-repeat; align-items: flex-start; }
         #board::before { content:''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: -1; pointer-events: none; }
 
@@ -113,7 +81,7 @@
             background: rgba(25, 25, 25, 0.95); border: 1px solid #444; border-radius: 6px; 
             display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; 
             height: 100%; min-width: 160px; width: 160px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            overflow: hidden;
+            overflow: hidden; position: relative;
         }
         .column.drag-over { background: rgba(60, 60, 60, 0.95); box-shadow: 0 0 25px var(--accent); border-color: var(--accent); }
         .col-special { width: 180px; min-width: 180px; border: 1px solid #666; }
@@ -132,7 +100,8 @@
             padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;
             font-family: 'Orbitron'; font-weight: 900; font-size: 18px; 
             border-bottom: 4px solid transparent; text-transform: uppercase; 
-            background: rgba(0,0,0,0.8); border-top-left-radius: 6px; border-top-right-radius: 6px; z-index: 5;
+            background: rgba(0,0,0,0.8); z-index: 20; /* Higher Z than content */
+            position: relative;
             letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
         
@@ -161,11 +130,17 @@
         .ch-Special { border-bottom-color: var(--c-Special); color: var(--c-Special); }
         .ch-cost { border-bottom-color: #666; color: #fff; font-size: 24px; }
 
-        .col-content { flex: 1; overflow-y: auto; overflow-x: visible; padding: 15px 8px 50px 8px; display: flex; flex-direction: column; align-items: center; scrollbar-width: thin; scrollbar-color: #444 #111; }
+        .col-content { 
+            flex: 1; overflow-y: auto; overflow-x: visible; 
+            padding: 15px 8px 50px 8px; 
+            display: flex; flex-direction: column; align-items: center; 
+            scrollbar-width: thin; scrollbar-color: #444 #111; 
+            position: relative; z-index: 10;
+        }
         #list-Pool { display: grid; grid-template-columns: 1fr; gap: 8px; align-content: start; align-items: center; }
 
         /* --- SIDEBAR --- */
-        #sidebar { width: 300px; background: #111; border-left: 2px solid #333; display: flex; flex-direction: column; z-index: 100; transition: all 0.2s; position: relative; flex-shrink: 0; box-shadow: -5px 0 20px rgba(0,0,0,0.5); }
+        #sidebar { width: 300px; background: #111; border-left: 2px solid #333; display: flex; flex-direction: column; z-index: 4000; transition: all 0.2s; position: relative; flex-shrink: 0; box-shadow: -5px 0 20px rgba(0,0,0,0.5); }
         #sidebar.drag-over-deck { background: #1a1a1a; box-shadow: inset 0 0 30px var(--accent-glow); border-left-color: var(--accent); }
         .sb-header { padding: 20px; background: #151515; border-bottom: 1px solid #333; font-family: 'Orbitron'; color: var(--accent); font-size: 16px; letter-spacing: 1px; text-align: center; }
         #deck-list { flex: 1; overflow-y: auto; padding: 15px; list-style: none; margin: 0; }
@@ -175,6 +150,7 @@
         }
         #deck-list li:hover { background: #333; color: #fff; transform: translateX(5px); border-left-color: var(--accent) !important; }
         .sb-footer { padding: 15px; border-top: 1px solid #333; background: #151515; }
+        .save-load-container { display: flex; justify-content: space-between; margin-bottom: 10px; }
 
         /* --- CARD ITEM --- */
         .card-item { 
@@ -186,7 +162,13 @@
         }
         .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -140px; }
         #list-Pool .card-item, #list-Leader .card-item, #list-Base .card-item { margin-top: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        .card-item:hover { transform: scale(1.15); z-index: 1000 !important; box-shadow: 0 0 25px rgba(0,0,0,0.9); border-color: var(--accent); }
+        
+        .card-item:hover { 
+            transform: scale(1.15); 
+            z-index: 1000 !important; /* Below header (5000), above other cards */
+            box-shadow: 0 0 25px rgba(0,0,0,0.9); 
+            border-color: var(--accent); 
+        }
         .card-item img { width: 100%; height: auto; display: block; border-radius: 8px; pointer-events: none; }
         .card-actions { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; border-radius: 8px; backdrop-filter: blur(2px); }
         .card-item:hover .card-actions { display: flex; }
@@ -194,15 +176,17 @@
         .stack-badge { position: absolute; top: -5px; right: -5px; background: var(--accent); color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: 900; border: 2px solid #000; z-index: 10; box-shadow: 2px 2px 5px #000; }
 
         /* --- OVERLAYS --- */
-        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 4000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center; }
+        #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center; }
         #upload-zone { border: 2px dashed #555; padding: 40px; border-radius: 10px; background: #222; margin-top: 20px; }
-        #preview-tooltip { position: fixed; display: none; z-index: 5000; pointer-events: none; background: rgba(0,0,0,0.8); border: 2px solid #555; border-radius: 8px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.9); overflow: hidden; }
+        
+        #preview-tooltip { position: fixed; display: none; z-index: 6000; pointer-events: none; background: rgba(0,0,0,0.8); border: 2px solid #555; border-radius: 8px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.9); overflow: hidden; }
         #preview-tooltip img { width: 340px; display: block; }
         #preview-tooltip.big-preview img { width: auto; height: 65vh; max-width: none; }
-        #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; justify-content:center; align-items:center; flex-direction: column; }
+        
+        #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:7000; justify-content:center; align-items:center; flex-direction: column; }
         #modal img { max-width:90vw; max-height:70vh; border-radius: 12px; display: block; box-shadow: 0 0 50px #000; border: 2px solid #333; }
         .big-flip-btn { background: var(--accent); color: #000; font-family: 'Orbitron'; font-size: 20px; font-weight: 900; padding: 15px 40px; border: 3px solid #000; border-radius: 8px; cursor: pointer; box-shadow: 0 0 20px var(--accent); margin-top: 20px; }
-        #toast { visibility: hidden; min-width: 200px; background-color: #222; color: var(--accent); text-align: center; border-radius: 4px; padding: 15px; position: fixed; z-index: 3000; left: 50%; bottom: 40px; transform: translateX(-50%); font-family: 'Orbitron'; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(0,0,0,0.8); font-weight: bold; }
+        #toast { visibility: hidden; min-width: 200px; background-color: #222; color: var(--accent); text-align: center; border-radius: 4px; padding: 15px; position: fixed; z-index: 8000; left: 50%; bottom: 40px; transform: translateX(-50%); font-family: 'Orbitron'; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(0,0,0,0.8); font-weight: bold; }
         #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 40px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 40px; opacity: 1;} to {bottom: 0; opacity: 0;} }
@@ -249,6 +233,10 @@
             <div class="sb-header">YOUR DECK (<span id="deck-count">0</span>)</div>
             <ul id="deck-list"></ul>
             <div class="sb-footer">
+                <div class="save-load-container">
+                    <button class="btn btn-save" onclick="saveDeck()">SAVE DECK</button>
+                    <button class="btn btn-load" onclick="loadDeck()">LOAD DECK</button>
+                </div>
                 <button class="btn" style="width:100%" onclick="copyJSON()">COPY JSON</button>
                 <button class="btn" style="width:100%; margin-top:8px; background:#522; border-color:#844; color:#faa;" onclick="clearDeck()">CLEAR DECK</button>
             </div>
@@ -303,13 +291,10 @@ function handleFileSelect(files) {
 }
 
 function parseCSVandInstall(csvText) {
-    // --- ROBUST PARSER START ---
     const rows = [];
     let currentRow = [];
     let currentVal = '';
     let insideQuote = false;
-    
-    // Auto-detect delimiter (Comma or Semicolon) from first line
     let firstLineEnd = csvText.indexOf('\n');
     if(firstLineEnd === -1) firstLineEnd = csvText.length;
     const firstLine = csvText.substring(0, firstLineEnd);
@@ -318,29 +303,19 @@ function parseCSVandInstall(csvText) {
     for (let i = 0; i < csvText.length; i++) {
         const char = csvText[i];
         const nextChar = csvText[i+1];
-
         if (char === '"') {
-            if (insideQuote && nextChar === '"') {
-                currentVal += '"';
-                i++; 
-            } else {
-                insideQuote = !insideQuote;
-            }
+            if (insideQuote && nextChar === '"') { currentVal += '"'; i++; } 
+            else { insideQuote = !insideQuote; }
         } else if (char === delim && !insideQuote) {
-            currentRow.push(currentVal.trim());
-            currentVal = '';
+            currentRow.push(currentVal.trim()); currentVal = '';
         } else if ((char === '\n' || char === '\r') && !insideQuote) {
             if (char === '\r' && nextChar === '\n') i++;
             currentRow.push(currentVal.trim());
             if (currentRow.length > 1) rows.push(currentRow);
-            currentRow = [];
-            currentVal = '';
-        } else {
-            currentVal += char;
-        }
+            currentRow = []; currentVal = '';
+        } else { currentVal += char; }
     }
     if (currentRow.length > 1) rows.push(currentRow);
-    // --- ROBUST PARSER END ---
 
     if(rows.length < 2) { alert("File seems empty or invalid format."); return; }
     
@@ -348,7 +323,6 @@ function parseCSVandInstall(csvText) {
     const m = {}; 
     h.forEach((v,i) => m[v.replace(/^"|"$/g, '').trim()] = i); 
     
-    // Loose check for columns to be safe
     let idIdx = -1, costIdx = -1, setIdx = -1, typeIdx = -1;
     Object.keys(m).forEach(k => {
         if(k.includes('Card ID')) idIdx = m[k];
@@ -380,7 +354,6 @@ function parseCSVandInstall(csvText) {
         const typeRaw = row[typeIdx] || "Unit";
         const cost = parseInt(row[costIdx]) || 0;
         
-        // Rarity
         let rarVal = row[m['Rarity']] ? row[m['Rarity']].trim().toUpperCase() : "C";
         if(rarVal.length > 0) rarVal = rarVal.charAt(0);
         let rarity = "Common";
@@ -389,7 +362,6 @@ function parseCSVandInstall(csvText) {
         else if(rarVal === 'L') rarity = "Legendary";
         else if(rarVal === 'S') rarity = "Special";
 
-        // Neutral Fix
         const a1 = row[m['Aspect(s)']] || "";
         const a2 = row[m['Unnamed: 12']] || ""; 
         let asp = "Neutral"; 
@@ -623,8 +595,32 @@ function copyJSON() {
     const el=document.createElement('textarea'); el.value=JSON.stringify(d,null,2); 
     document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
     playAudio('snd-copy'); 
-    const t = document.getElementById('toast');
+    const t = document.getElementById('toast'); t.innerText = "JSON COPIED!";
     t.className = 'show'; setTimeout(()=>t.className='', 2000);
+}
+
+// --- SAVE / LOAD FUNCTIONALITY ---
+function saveDeck() {
+    if (Object.keys(myDeck).length === 0) { alert("Deck is empty!"); return; }
+    localStorage.setItem('SWU_SAVED_DECK', JSON.stringify(myDeck));
+    const t = document.getElementById('toast'); t.innerText = "DECK SAVED!";
+    t.className = 'show'; setTimeout(()=>t.className='', 2000);
+}
+
+function loadDeck() {
+    const saved = localStorage.getItem('SWU_SAVED_DECK');
+    if (!saved) { alert("No saved deck found!"); return; }
+    if (Object.keys(myDeck).length > 0 && !confirm("Overwrite current deck?")) return;
+    
+    try {
+        myDeck = JSON.parse(saved);
+        renderBoard(); // Refresh view
+        updateSidebar(); // Refresh list
+        const t = document.getElementById('toast'); t.innerText = "DECK LOADED!";
+        t.className = 'show'; setTimeout(()=>t.className='', 2000);
+    } catch(e) {
+        alert("Error loading deck.");
+    }
 }
 
 const tip = document.getElementById('preview-tooltip');
