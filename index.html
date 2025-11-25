@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Pack Fix)</title>
+    <title>SWU: GitHub Drafter (Final Repair)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -204,7 +204,7 @@
         .sb-footer { padding: 15px; border-top: 1px solid #333; background: #151515; }
         .save-load-container { display: flex; justify-content: space-between; margin-bottom: 10px; }
 
-        /* --- CARD ITEM --- */
+        /* --- CARD ITEM (SMART STACKING) --- */
         .card-item { 
             position: relative; background: #000; border-radius: 8px; cursor: grab; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.8); 
@@ -214,12 +214,8 @@
             flex-shrink: 0; overflow: visible;
         }
         
-        .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { 
-            margin-top: -120px; 
-        }
-        .col-content:hover .card-item:not(:first-child) { 
-            margin-top: -60px; transform: scale(1.02); 
-        }
+        .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -120px; }
+        .col-content:hover .card-item:not(:first-child) { margin-top: -60px; transform: scale(1.02); }
 
         #list-Leader .card-item, #list-Base .card-item, #list-Pool .card-item { margin-top: 5px !important; border: none; background: transparent; }
         #list-Leader .card-item:hover, #list-Base .card-item:hover { transform: scale(1.1); z-index: 1000; }
@@ -412,7 +408,13 @@ function parseCSVandInstall(csvText) {
         return;
     }
 
-    const setMap = {'TWL': 'TWI', 'SOR': 'SOR', 'SHD': 'SHD', 'JTL': 'JTL', 'LOF': 'LOF', 'SEC': 'SEC'};
+    // Enhanced map to handle TWI/TWL mismatches
+    const setMap = {
+        'TWL': 'TWI', 'TWI': 'TWI',
+        'SOR': 'SOR', 'SHD': 'SHD', 
+        'JTL': 'JTL', 'LOF': 'LOF', 
+        'SEC': 'SEC'
+    };
     const mainAspects = ["Aggression", "Command", "Cunning", "Vigilance"];
     const db = {};
     let count = 0;
@@ -422,12 +424,8 @@ function parseCSVandInstall(csvText) {
         if(row.length < h.length) continue;
         
         const rawSet = row[setIdx];
-        if(!setMap[rawSet]) continue; // Skip unknown sets, but TWI is in map
-        
-        // Special handling for TWI if source is TWL in CSV
-        let setCode = setMap[rawSet];
-        // Just in case setMap didn't catch it due to exact match, force map:
-        if (rawSet === 'TWI') setCode = 'TWI';
+        if(!setMap[rawSet]) continue;
+        const setCode = setMap[rawSet];
 
         const id = row[idIdx].split('.')[0].padStart(3, '0');
         const name = row[m['Card Name']];
@@ -468,7 +466,9 @@ function parseCSVandInstall(csvText) {
         if(simpleType === 'Leader') { 
             let backSuffix = '-back';
             // Force portrait for ALL sets
-            backSuffix = '-portrait';
+            if (['SOR', 'SHD', 'TWI', 'JTL', 'LOF', 'SEC'].includes(setCode)) {
+                backSuffix = '-portrait';
+            }
             cardObj.back=`https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}${backSuffix}.png`; 
             db[setCode].leaders.push(cardObj); 
         }
@@ -493,11 +493,7 @@ function updateDBStatus() {
 }
 
 function getCostColumn(c) { const v=parseInt(c); if(isNaN(v)||v<=1)return "1"; if(v>=8)return "8"; return v.toString(); }
-function getSetData(sc) { 
-    // Fallback to ensure TWI works if mapped from TWL
-    if (!LOCAL_DATABASE[sc] && sc === 'TWI' && LOCAL_DATABASE['TWL']) return LOCAL_DATABASE['TWL'];
-    return (LOCAL_DATABASE[sc]&&LOCAL_DATABASE[sc].deck.length) ? LOCAL_DATABASE[sc] : {leaders:[],bases:[],deck:[]}; 
-}
+function getSetData(sc) { return (LOCAL_DATABASE[sc]&&LOCAL_DATABASE[sc].deck.length) ? LOCAL_DATABASE[sc] : {leaders:[],bases:[],deck:[]}; }
 
 function resetDatabase() {
     if(confirm("Reset Database and reload?")) {
@@ -530,7 +526,10 @@ function openPacks() {
     playAudio('snd-cantina');
     
     const d = getSetData(setCode);
-    if(!d.deck.length) { alert(`No cards found for ${setCode}.`); return; }
+    if(!d.deck.length) { 
+        alert(`Ingen kort fundet for ${setCode}. Tjek om din CSV fil bruger koden ${setCode} eller en anden (f.eks. TWL vs TWI).`); 
+        return; 
+    }
     
     currentView = [];
     for(let i=0; i<count; i++) {
@@ -550,11 +549,11 @@ function openPacks() {
     renderBoard();
 }
 
-// --- DRAFT (OFFICIAL RULES) ---
+// --- DRAFT ---
 function startDraft() {
     draftState = { active: true, phase: 'LEADER', round: 1, packSize: 14, set: document.getElementById('setSelect').value, hand: [] };
     const d = getSetData(draftState.set);
-    if(!d.deck.length) { alert("No data"); return; }
+    if(!d.deck.length) { alert("No data for this set."); return; }
     
     playAudio('snd-cantina');
     myDeck = {}; updateSidebar(); 
@@ -611,11 +610,12 @@ function renderDraftHand() {
 }
 
 function pickCard(c) {
-    // ADD DIRECTLY TO DECK (AND POOL FOR VIEW)
+    // Add to Deck
     const k = `${c.set}_${c.id}`;
     if(myDeck[k]) myDeck[k].count++; else myDeck[k] = {...c, count:1};
     updateSidebar();
 
+    // Add to Board
     let col = 'Pool';
     if(c.type === 'Leader') col = 'Leader';
     else if(c.type === 'Base') col = 'Base';
@@ -646,7 +646,7 @@ function pickCard(c) {
     }
 }
 
-// --- BASE PICKER (SOR Fallback) ---
+// --- BASE PICKER ---
 function openBasePicker() {
     const content = document.getElementById('modal-content');
     const modal = document.getElementById('modal');
@@ -663,15 +663,12 @@ function openBasePicker() {
 }
 
 function addBase(aspect) {
-    // Force OFFICIAL SOR common bases (019-022)
     const baseMap = { "Aggression": "019", "Command": "020", "Cunning": "021", "Vigilance": "022" };
     const id = baseMap[aspect];
     const img = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/SOR/${id}.png`;
     
-    // Create a new unique base object
     let base = { id: id, set: 'SOR', name: aspect + ' Base', img: img, type: 'Base', aspect: aspect, rarity: 'Common' };
     
-    // ADD DIRECTLY TO DECK
     const k = `${base.set}_${base.id}`;
     if(myDeck[k]) myDeck[k].count++; else myDeck[k] = {...base, count:1};
     updateSidebar();
@@ -758,18 +755,15 @@ function renderBoard() {
         if(!t) return;
         
         const el = document.createElement('div'); 
-        
         el.className = 'card-item'; 
         el.draggable = true;
         el.ondragstart = e => e.dataTransfer.setData("text/plain", JSON.stringify({id:c.id, set:c.set, source:'board'}));
         
-        // CLICK HANDLER: 
         el.onclick = () => {
             if (!draftState.active) {
-                // SEALED MODE: Add to deck immediately
-                addToDeck(c.id, c.set);
+                el.style.transform = "scale(0.9)";
+                setTimeout(() => addToDeck(c.id, c.set), 100);
             } else {
-                // DRAFT MODE: Must pick via draft hand, so board clicks just view
                 openModal(c);
             }
         };
@@ -780,14 +774,10 @@ function renderBoard() {
         el.onmouseenter = e => showPreview(e, imgSrc, c.type); 
         el.onmouseleave = hidePreview; el.onmousemove = e => movePreview(e);
         
-        // Action button in sealed
-        const actionClick = draftState.active ? `openModal(${JSON.stringify(c).replace(/"/g, '&quot;')})` : `addToDeck('${c.id}','${c.set}')`;
-
-        // HIDE PLUS BUTTON IN DRAFT MODE ON BOARD (Since you can't pick from board)
-        const btnDisplay = draftState.active ? 'none' : 'flex';
+        const actionClick = draftState.active ? `handleDraftPick('${c.id}','${c.set}')` : `addToDeck('${c.id}','${c.set}')`;
 
         el.innerHTML = (c.count>1 && !draftState.active ?`<div class="stack-badge">${c.count}</div>`:'') + 
-            `<img src="${imgSrc}" draggable="false"><div class="card-actions" style="display:${btnDisplay}" onclick="event.stopPropagation(); ${actionClick}"><div class="add-icon">+</div></div>`;
+            `<img src="${imgSrc}" draggable="false"><div class="card-actions" onclick="event.stopPropagation(); ${actionClick}"><div class="add-icon">+</div></div>`;
         t.appendChild(el);
     });
 }
@@ -804,9 +794,7 @@ function toggleSort() {
 function addToDeck(id, set) {
     const idx = currentView.findIndex(c => c.id===id && c.set===set);
     if(idx===-1) return;
-    
-    const c = currentView[idx]; 
-    currentView.splice(idx, 1); 
+    const c = currentView[idx]; currentView.splice(idx, 1); 
     const k = `${c.set}_${c.id}`;
     if(myDeck[k]) myDeck[k].count++; else myDeck[k] = {...c, count:1}; 
     renderBoard(); updateSidebar();
@@ -891,61 +879,24 @@ function handleDropOnBoard(e, cn) {
 
 function copyJSON() { 
     const d={metadata:{name:"Draft Deck",author:"SWU Drafter"},leader:null,base:null,deck:[],sideboard:[]};
-    
-    try {
-        Object.values(myDeck).forEach(c=>{ 
-            if (!c || !c.set) return; // Safety check
-            const pid = `${c.set.toUpperCase()}_${c.id}`;
-            const entry = {id: pid, count: c.count}; 
-            if(c.type==='Leader') { d.leader = entry; } 
-            else if(c.type==='Base') { d.base = entry; } 
-            else d.deck.push(entry); 
-        });
-
-        const jsonString = JSON.stringify(d, null, 2);
-        
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(jsonString).then(() => {
-                showToast("JSON COPIED!");
-            }).catch(err => {
-                console.error(err);
-                fallbackCopy(jsonString);
-            });
-        } else {
-            fallbackCopy(jsonString);
-        }
-    } catch (e) {
-        console.error("JSON Error:", e);
-        alert("Error generating JSON. Check console.");
-    }
-}
-
-function fallbackCopy(text) {
-    const el = document.createElement('textarea');
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
-    try {
-        document.execCommand('copy');
-        showToast("JSON COPIED!");
-    } catch (err) {
-        alert("Clipboard access failed. Please copy manually from console.");
-        console.log(text);
-    }
-    document.body.removeChild(el);
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.className = 'show';
-    setTimeout(()=>t.className='', 2000);
+    Object.values(myDeck).forEach(c=>{ 
+        const pid = `${c.set.toUpperCase()}_${c.id}`;
+        const entry = {id: pid, count: c.count}; 
+        if(c.type==='Leader') { d.leader = entry; } 
+        else if(c.type==='Base') { d.base = entry; } 
+        else d.deck.push(entry); 
+    });
+    const el=document.createElement('textarea'); el.value=JSON.stringify(d,null,2); 
+    document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
+    const t = document.getElementById('toast'); t.innerText = "JSON COPIED!";
+    t.className = 'show'; setTimeout(()=>t.className='', 2000);
 }
 
 function saveDeck() {
     if (Object.keys(myDeck).length === 0) { alert("Deck is empty!"); return; }
     localStorage.setItem('SWU_SAVED_DECK', JSON.stringify(myDeck));
-    showToast("DECK SAVED!");
+    const t = document.getElementById('toast'); t.innerText = "DECK SAVED!";
+    t.className = 'show'; setTimeout(()=>t.className='', 2000);
 }
 
 function loadDeck() {
@@ -955,7 +906,8 @@ function loadDeck() {
     try {
         myDeck = JSON.parse(saved);
         renderBoard(); updateSidebar(); 
-        showToast("DECK LOADED!");
+        const t = document.getElementById('toast'); t.innerText = "DECK LOADED!";
+        t.className = 'show'; setTimeout(()=>t.className='', 2000);
     } catch(e) { alert("Error loading deck."); }
 }
 
