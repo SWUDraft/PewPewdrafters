@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Stable)</title>
+    <title>SWU: GitHub Drafter (Pack Fix)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -204,25 +204,21 @@
         .sb-footer { padding: 15px; border-top: 1px solid #333; background: #151515; }
         .save-load-container { display: flex; justify-content: space-between; margin-bottom: 10px; }
 
-        /* --- CARD ITEM (SMART STACKING) --- */
+        /* --- CARD ITEM --- */
         .card-item { 
             position: relative; background: #000; border-radius: 8px; cursor: grab; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.8); 
             transition: transform 0.1s ease-out, margin 0.3s ease; 
             display: flex; flex-direction: column; width: 100%; z-index: 1; 
             will-change: transform; border: 1px solid #333; 
-            
-            /* FIX: ALDRIG MASE KORTENE */
-            flex-shrink: 0;
-            overflow: visible;
+            flex-shrink: 0; overflow: visible;
         }
         
         .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { 
-            margin-top: -120px; /* Mere afstand, så man kan se toppen */
+            margin-top: -120px; 
         }
         .col-content:hover .card-item:not(:first-child) { 
-            margin-top: -60px; /* Folder meget ud */
-            transform: scale(1.02); 
+            margin-top: -60px; transform: scale(1.02); 
         }
 
         #list-Leader .card-item, #list-Base .card-item, #list-Pool .card-item { margin-top: 5px !important; border: none; background: transparent; }
@@ -230,7 +226,7 @@
 
         .card-item:hover { transform: scale(1.15); z-index: 1000 !important; box-shadow: 0 0 25px rgba(0,0,0,0.9); border-color: var(--accent); }
         .card-item img { width: 100%; height: auto; display: block; border-radius: 8px; pointer-events: none; position: relative; z-index: 1; }
-
+        
         .card-actions { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; border-radius: 8px; backdrop-filter: blur(2px); z-index: 5; }
         .card-item:hover .card-actions { display: flex; }
         .add-icon { font-size: 30px; color: var(--accent); font-weight: 900; pointer-events: none; background: rgba(0,0,0,0.8); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
@@ -426,8 +422,12 @@ function parseCSVandInstall(csvText) {
         if(row.length < h.length) continue;
         
         const rawSet = row[setIdx];
-        if(!setMap[rawSet]) continue;
-        const setCode = setMap[rawSet];
+        if(!setMap[rawSet]) continue; // Skip unknown sets, but TWI is in map
+        
+        // Special handling for TWI if source is TWL in CSV
+        let setCode = setMap[rawSet];
+        // Just in case setMap didn't catch it due to exact match, force map:
+        if (rawSet === 'TWI') setCode = 'TWI';
 
         const id = row[idIdx].split('.')[0].padStart(3, '0');
         const name = row[m['Card Name']];
@@ -467,10 +467,8 @@ function parseCSVandInstall(csvText) {
         
         if(simpleType === 'Leader') { 
             let backSuffix = '-back';
-            // FIX: ALL SETS use portrait for leader backs on SWUDB CDN
-            if (['SOR', 'SHD', 'TWI', 'JTL', 'LOF', 'SEC'].includes(setCode)) {
-                backSuffix = '-portrait';
-            }
+            // Force portrait for ALL sets
+            backSuffix = '-portrait';
             cardObj.back=`https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}${backSuffix}.png`; 
             db[setCode].leaders.push(cardObj); 
         }
@@ -495,7 +493,11 @@ function updateDBStatus() {
 }
 
 function getCostColumn(c) { const v=parseInt(c); if(isNaN(v)||v<=1)return "1"; if(v>=8)return "8"; return v.toString(); }
-function getSetData(sc) { return (LOCAL_DATABASE[sc]&&LOCAL_DATABASE[sc].deck.length) ? LOCAL_DATABASE[sc] : {leaders:[],bases:[],deck:[]}; }
+function getSetData(sc) { 
+    // Fallback to ensure TWI works if mapped from TWL
+    if (!LOCAL_DATABASE[sc] && sc === 'TWI' && LOCAL_DATABASE['TWL']) return LOCAL_DATABASE['TWL'];
+    return (LOCAL_DATABASE[sc]&&LOCAL_DATABASE[sc].deck.length) ? LOCAL_DATABASE[sc] : {leaders:[],bases:[],deck:[]}; 
+}
 
 function resetDatabase() {
     if(confirm("Reset Database and reload?")) {
@@ -507,7 +509,7 @@ function resetDatabase() {
 // --- MODE SELECTION ---
 function setMode(mode) {
     appMode = mode;
-    draftState.active = false; // FORCE RESET DRAFT STATE
+    draftState.active = false;
     
     document.getElementById('mode-sealed').classList.toggle('active', mode === 'sealed');
     document.getElementById('mode-draft').classList.toggle('active', mode === 'draft');
@@ -761,12 +763,13 @@ function renderBoard() {
         el.draggable = true;
         el.ondragstart = e => e.dataTransfer.setData("text/plain", JSON.stringify({id:c.id, set:c.set, source:'board'}));
         
-        // FIX: CLICK ANYWHERE TO ADD
+        // CLICK HANDLER: 
         el.onclick = () => {
             if (!draftState.active) {
-                el.style.transform = "scale(0.9)";
-                setTimeout(() => addToDeck(c.id, c.set), 100);
+                // SEALED MODE: Add to deck immediately
+                addToDeck(c.id, c.set);
             } else {
+                // DRAFT MODE: Must pick via draft hand, so board clicks just view
                 openModal(c);
             }
         };
@@ -777,10 +780,14 @@ function renderBoard() {
         el.onmouseenter = e => showPreview(e, imgSrc, c.type); 
         el.onmouseleave = hidePreview; el.onmousemove = e => movePreview(e);
         
-        const actionClick = draftState.active ? `handleDraftPick('${c.id}','${c.set}')` : `addToDeck('${c.id}','${c.set}')`;
+        // Action button in sealed
+        const actionClick = draftState.active ? `openModal(${JSON.stringify(c).replace(/"/g, '&quot;')})` : `addToDeck('${c.id}','${c.set}')`;
+
+        // HIDE PLUS BUTTON IN DRAFT MODE ON BOARD (Since you can't pick from board)
+        const btnDisplay = draftState.active ? 'none' : 'flex';
 
         el.innerHTML = (c.count>1 && !draftState.active ?`<div class="stack-badge">${c.count}</div>`:'') + 
-            `<img src="${imgSrc}" draggable="false"><div class="card-actions" onclick="event.stopPropagation(); ${actionClick}"><div class="add-icon">+</div></div>`;
+            `<img src="${imgSrc}" draggable="false"><div class="card-actions" style="display:${btnDisplay}" onclick="event.stopPropagation(); ${actionClick}"><div class="add-icon">+</div></div>`;
         t.appendChild(el);
     });
 }
@@ -797,7 +804,9 @@ function toggleSort() {
 function addToDeck(id, set) {
     const idx = currentView.findIndex(c => c.id===id && c.set===set);
     if(idx===-1) return;
-    const c = currentView[idx]; currentView.splice(idx, 1); 
+    
+    const c = currentView[idx]; 
+    currentView.splice(idx, 1); 
     const k = `${c.set}_${c.id}`;
     if(myDeck[k]) myDeck[k].count++; else myDeck[k] = {...c, count:1}; 
     renderBoard(); updateSidebar();
@@ -880,7 +889,6 @@ function handleDropOnBoard(e, cn) {
     } catch(e){}
 }
 
-// --- JSON EXPORT (FIXED CLIPBOARD) ---
 function copyJSON() { 
     const d={metadata:{name:"Draft Deck",author:"SWU Drafter"},leader:null,base:null,deck:[],sideboard:[]};
     
@@ -896,7 +904,6 @@ function copyJSON() {
 
         const jsonString = JSON.stringify(d, null, 2);
         
-        // Use modern clipboard API if possible, fallback to textarea
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(jsonString).then(() => {
                 showToast("JSON COPIED!");
