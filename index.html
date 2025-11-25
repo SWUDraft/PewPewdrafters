@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Draft List Fix)</title>
+    <title>SWU: GitHub Drafter (Stable)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -110,13 +110,12 @@
         .column { 
             background: rgba(25, 25, 25, 0.95); border: 1px solid #444; border-radius: 6px; 
             display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; 
-            height: 100%; min-width: 180px; width: 180px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            height: 100%; min-width: 160px; width: 160px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             overflow: hidden; position: relative;
         }
         .column.drag-over { background: rgba(60, 60, 60, 0.95); box-shadow: 0 0 25px var(--accent); border-color: var(--accent); }
-        .col-special { width: 200px; min-width: 200px; border: 1px solid #666; }
-        .col-pool { width: 200px; min-width: 200px; border: 1px solid #644; background: rgba(35, 20, 20, 0.95); }
+        .col-special { width: 180px; min-width: 180px; border: 1px solid #666; }
+        .col-pool { width: 180px; min-width: 180px; border: 1px solid #644; background: rgba(35, 20, 20, 0.95); }
 
         .column.collapsed { min-width: 40px; width: 40px; background: #111; border-color: #333; }
         .column.collapsed .col-content { display: none; }
@@ -205,21 +204,25 @@
         .sb-footer { padding: 15px; border-top: 1px solid #333; background: #151515; }
         .save-load-container { display: flex; justify-content: space-between; margin-bottom: 10px; }
 
-        /* --- CARD ITEM --- */
+        /* --- CARD ITEM (SMART STACKING) --- */
         .card-item { 
             position: relative; background: #000; border-radius: 8px; cursor: grab; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.8); 
             transition: transform 0.1s ease-out, margin 0.3s ease; 
             display: flex; flex-direction: column; width: 100%; z-index: 1; 
             will-change: transform; border: 1px solid #333; 
-            flex-shrink: 0; overflow: visible;
+            
+            /* FIX: ALDRIG MASE KORTENE */
+            flex-shrink: 0;
+            overflow: visible;
         }
         
         .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { 
-            margin-top: -120px; 
+            margin-top: -120px; /* Mere afstand, så man kan se toppen */
         }
         .col-content:hover .card-item:not(:first-child) { 
-            margin-top: -60px; transform: scale(1.02); 
+            margin-top: -60px; /* Folder meget ud */
+            transform: scale(1.02); 
         }
 
         #list-Leader .card-item, #list-Base .card-item, #list-Pool .card-item { margin-top: 5px !important; border: none; background: transparent; }
@@ -227,7 +230,7 @@
 
         .card-item:hover { transform: scale(1.15); z-index: 1000 !important; box-shadow: 0 0 25px rgba(0,0,0,0.9); border-color: var(--accent); }
         .card-item img { width: 100%; height: auto; display: block; border-radius: 8px; pointer-events: none; position: relative; z-index: 1; }
-        
+
         .card-actions { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; border-radius: 8px; backdrop-filter: blur(2px); z-index: 5; }
         .card-item:hover .card-actions { display: flex; }
         .add-icon { font-size: 30px; color: var(--accent); font-weight: 900; pointer-events: none; background: rgba(0,0,0,0.8); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
@@ -464,7 +467,7 @@ function parseCSVandInstall(csvText) {
         
         if(simpleType === 'Leader') { 
             let backSuffix = '-back';
-            // FIX: FORCE PORTRAIT FOR ALL KNOWN SETS INCLUDING SOR & SHD
+            // FIX: ALL SETS use portrait for leader backs on SWUDB CDN
             if (['SOR', 'SHD', 'TWI', 'JTL', 'LOF', 'SEC'].includes(setCode)) {
                 backSuffix = '-portrait';
             }
@@ -504,6 +507,8 @@ function resetDatabase() {
 // --- MODE SELECTION ---
 function setMode(mode) {
     appMode = mode;
+    draftState.active = false; // FORCE RESET DRAFT STATE
+    
     document.getElementById('mode-sealed').classList.toggle('active', mode === 'sealed');
     document.getElementById('mode-draft').classList.toggle('active', mode === 'draft');
     document.getElementById('ctrl-sealed').style.display = mode === 'sealed' ? 'flex' : 'none';
@@ -604,12 +609,11 @@ function renderDraftHand() {
 }
 
 function pickCard(c) {
-    // Add to Pool (Board) and Deck (Sidebar) simultaneously for Draft
+    // ADD DIRECTLY TO DECK (AND POOL FOR VIEW)
     const k = `${c.set}_${c.id}`;
     if(myDeck[k]) myDeck[k].count++; else myDeck[k] = {...c, count:1};
     updateSidebar();
 
-    // Add to board visualization
     let col = 'Pool';
     if(c.type === 'Leader') col = 'Leader';
     else if(c.type === 'Base') col = 'Base';
@@ -640,7 +644,7 @@ function pickCard(c) {
     }
 }
 
-// --- BASE PICKER (OFFICIAL SOR BASES) ---
+// --- BASE PICKER (SOR Fallback) ---
 function openBasePicker() {
     const content = document.getElementById('modal-content');
     const modal = document.getElementById('modal');
@@ -662,14 +666,14 @@ function addBase(aspect) {
     const id = baseMap[aspect];
     const img = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/SOR/${id}.png`;
     
+    // Create a new unique base object
     let base = { id: id, set: 'SOR', name: aspect + ' Base', img: img, type: 'Base', aspect: aspect, rarity: 'Common' };
     
-    // Add directly to Deck (Sidebar)
+    // ADD DIRECTLY TO DECK
     const k = `${base.set}_${base.id}`;
     if(myDeck[k]) myDeck[k].count++; else myDeck[k] = {...base, count:1};
     updateSidebar();
 
-    // Also add to view (Board)
     currentView.push({...base, uid: Date.now()+'b', column: 'Base'});
     renderBoard();
     closeModal();
@@ -850,8 +854,6 @@ function clearDeck() {
     myDeck={}; updateSidebar(); 
 }
 
-function playAudio(id) { const s=document.getElementById(id); if(s){s.volume=0.4; s.currentTime=0; s.play().catch(e=>{});} }
-
 function handleDropOnDeck(e) { 
     e.preventDefault(); document.getElementById('sidebar').classList.remove('drag-over-deck');
     try { const d=JSON.parse(e.dataTransfer.getData("text/plain")); if(d.source==='board') {
@@ -878,27 +880,65 @@ function handleDropOnBoard(e, cn) {
     } catch(e){}
 }
 
+// --- JSON EXPORT (FIXED CLIPBOARD) ---
 function copyJSON() { 
     const d={metadata:{name:"Draft Deck",author:"SWU Drafter"},leader:null,base:null,deck:[],sideboard:[]};
-    Object.values(myDeck).forEach(c=>{ 
-        const pid = `${c.set.toUpperCase()}_${c.id}`;
-        const entry = {id: pid, count: c.count}; 
-        if(c.type==='Leader') { d.leader = entry; } 
-        else if(c.type==='Base') { d.base = entry; } 
-        else d.deck.push(entry); 
-    });
-    const el=document.createElement('textarea'); el.value=JSON.stringify(d,null,2); 
-    document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
-    playAudio('snd-cantina'); 
-    const t = document.getElementById('toast'); t.innerText = "JSON COPIED!";
-    t.className = 'show'; setTimeout(()=>t.className='', 2000);
+    
+    try {
+        Object.values(myDeck).forEach(c=>{ 
+            if (!c || !c.set) return; // Safety check
+            const pid = `${c.set.toUpperCase()}_${c.id}`;
+            const entry = {id: pid, count: c.count}; 
+            if(c.type==='Leader') { d.leader = entry; } 
+            else if(c.type==='Base') { d.base = entry; } 
+            else d.deck.push(entry); 
+        });
+
+        const jsonString = JSON.stringify(d, null, 2);
+        
+        // Use modern clipboard API if possible, fallback to textarea
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(jsonString).then(() => {
+                showToast("JSON COPIED!");
+            }).catch(err => {
+                console.error(err);
+                fallbackCopy(jsonString);
+            });
+        } else {
+            fallbackCopy(jsonString);
+        }
+    } catch (e) {
+        console.error("JSON Error:", e);
+        alert("Error generating JSON. Check console.");
+    }
+}
+
+function fallbackCopy(text) {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    try {
+        document.execCommand('copy');
+        showToast("JSON COPIED!");
+    } catch (err) {
+        alert("Clipboard access failed. Please copy manually from console.");
+        console.log(text);
+    }
+    document.body.removeChild(el);
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.className = 'show';
+    setTimeout(()=>t.className='', 2000);
 }
 
 function saveDeck() {
     if (Object.keys(myDeck).length === 0) { alert("Deck is empty!"); return; }
     localStorage.setItem('SWU_SAVED_DECK', JSON.stringify(myDeck));
-    const t = document.getElementById('toast'); t.innerText = "DECK SAVED!";
-    t.className = 'show'; setTimeout(()=>t.className='', 2000);
+    showToast("DECK SAVED!");
 }
 
 function loadDeck() {
@@ -908,8 +948,7 @@ function loadDeck() {
     try {
         myDeck = JSON.parse(saved);
         renderBoard(); updateSidebar(); 
-        const t = document.getElementById('toast'); t.innerText = "DECK LOADED!";
-        t.className = 'show'; setTimeout(()=>t.className='', 2000);
+        showToast("DECK LOADED!");
     } catch(e) { alert("Error loading deck."); }
 }
 
