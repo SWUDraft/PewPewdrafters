@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Leader Back Fix)</title>
+    <title>SWU: GitHub Drafter (Pew Pew Edition)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -337,6 +337,8 @@
                 <button class="btn btn-action" style="background:#442; border-color:#aa0;" onclick="startDraft()">START DRAFT</button>
             </div>
             
+            <button class="btn" onclick="playAudio('snd-pew-real')">🔫 PEW</button>
+            
             <div class="segment-control">
                 <button class="segment-btn active" onclick="setSort('cost')">123</button>
                 <button class="segment-btn" onclick="setSort('aspect')">🎨</button>
@@ -397,6 +399,8 @@
     
     <audio id="snd-cantina" src="https://www.myinstants.com/media/sounds/cantina-band-star-wars.mp3" preload="auto"></audio>
     <audio id="snd-copy" src="https://www.myinstants.com/media/sounds/lightsaber-turn-on.mp3" preload="auto"></audio>
+    <audio id="snd-pew-real" src="https://www.myinstants.com/media/sounds/pew.mp3" preload="auto"></audio>
+    <audio id="snd-palpatine" src="https://www.myinstants.com/media/sounds/palpatine-no-you-will-die-28468.mp3" preload="auto"></audio>
 
 <script>
 const COST_COLS = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -566,7 +570,12 @@ function parseCSVandInstall(csvText) {
         if(!db[setCode]) db[setCode] = {leaders:[], bases:[], deck:[]};
         
         if(simpleType === 'Leader') { 
-            cardObj.back=`https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}-back.png`; 
+            // FIX: Force portrait suffix for specific sets as requested
+            if(setCode === 'TWI' || setCode === 'SOR' || setCode === 'SHD' || setCode === 'SEC' || setCode === 'LOF') {
+                cardObj.back = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}-portrait.png`;
+            } else {
+                cardObj.back = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}-back.png`; 
+            }
             db[setCode].leaders.push(cardObj); 
         }
         else if(simpleType === 'Base') db[setCode].bases.push(cardObj);
@@ -918,7 +927,7 @@ function renderBoard() {
         
         let imgSrc = c.img;
         if (c.type === 'Leader' && viewLeaderBack) {
-            imgSrc = c.back || c.img.replace('.png', '-back.png');
+            imgSrc = c.back || c.img.replace('.png', '-portrait.png');
         }
 
         el.innerHTML = (c.count>1 && !draftState.active ?`<div class="stack-badge">${c.count}</div>`:'') + 
@@ -1044,7 +1053,10 @@ function copyJSON() {
     });
     const el=document.createElement('textarea'); el.value=JSON.stringify(d,null,2); 
     document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); 
-    playAudio('snd-copy'); 
+    
+    // PLAY PALPATINE SOUND ON COPY JSON
+    playAudio('snd-palpatine');
+    
     const t = document.getElementById('toast'); t.innerText = "JSON COPIED!";
     t.className = 'show'; setTimeout(()=>t.className='', 2000);
 }
@@ -1094,10 +1106,16 @@ function openModal(c) {
     const content = document.getElementById('modal-content');
     modal.style.display = 'flex';
     if (c.type === 'Leader') {
+        // Auto-fix for missing back image logic in modal
+        let backImg = c.back || c.img.replace('.png', '-back.png');
+        if(c.set === 'TWI' || c.set === 'SOR' || c.set === 'SHD' || c.set === 'SEC' || c.set === 'LOF') {
+             backImg = c.img.replace('.png', '-portrait.png');
+        }
+
         content.innerHTML = `
             <div class="modal-leader-wrapper">
                 <div class="modal-leader-card"><h3 style="color:#aaa">FRONT</h3><img src="${c.img}" onclick="event.stopPropagation()"></div>
-                <div class="modal-leader-card"><h3 style="color:var(--accent)">UNIT SIDE</h3><img src="${c.back || c.img.replace('.png', '-back.png')}" onclick="event.stopPropagation()"></div>
+                <div class="modal-leader-card"><h3 style="color:var(--accent)">UNIT SIDE</h3><img src="${backImg}" onclick="event.stopPropagation()"></div>
             </div>`;
     } else {
         content.innerHTML = `<img id="modal-img-single" src="${c.img}" onclick="event.stopPropagation()">`;
