@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: GitHub Drafter (Sort Update)</title>
+    <title>SWU: GitHub Drafter (Leader Back Fix)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -67,6 +67,12 @@
         .segment-btn:last-child { border-right: none; }
         .segment-btn:hover { color: #fff; background: #151515; }
         .segment-btn.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--accent-glow); }
+
+        /* MODE SWITCHER */
+        .mode-switch { display: flex; background: #000; border: 1px solid #444; border-radius: 4px; overflow: hidden; margin-right: 10px; }
+        .mode-btn { padding: 8px 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px; color: #777; transition: 0.2s; }
+        .mode-btn:hover { color: #fff; }
+        .mode-btn.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--accent-glow); }
 
         .stat { font-family: 'Orbitron'; font-size: 14px; color: #aaa; margin-right: 20px; letter-spacing: 1px; }
         .stat span { color: var(--accent); font-size: 18px; }
@@ -222,6 +228,32 @@
         .sb-footer { padding: 15px; border-top: 1px solid #333; background: #151515; }
         .save-load-container { display: flex; justify-content: space-between; margin-bottom: 10px; }
 
+        /* NEW BASE ADDER BUTTON */
+        .btn-base-add {
+            width: 100%; border: 1px dashed #666; color: #aaa; margin-bottom: 15px;
+            background: rgba(255,255,255,0.05); padding: 10px; cursor: pointer;
+            font-family: 'Orbitron'; font-weight: bold; transition: 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-base-add:hover { border-color: var(--accent); color: #fff; background: rgba(255,232,31,0.1); }
+
+        /* VISUAL PICKER MODAL */
+        #base-picker-modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.95); z-index: 8000;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        #base-picker-content {
+            background: #151515; border: 1px solid #444; padding: 30px; border-radius: 12px;
+            width: 80%; max-width: 1000px; max-height: 80vh; overflow-y: auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        .picker-card { cursor: pointer; transition: 0.2s; position: relative; }
+        .picker-card:hover { transform: scale(1.1); z-index: 10; }
+        .picker-card img { width: 100%; border-radius: 8px; display: block; box-shadow: 0 5px 15px #000; }
+        .picker-card:hover img { outline: 3px solid var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
+
         /* --- CARD ITEM --- */
         .card-item { 
             position: relative; background: #000; border-radius: 8px; cursor: grab; 
@@ -305,8 +337,6 @@
                 <button class="btn btn-action" style="background:#442; border-color:#aa0;" onclick="startDraft()">START DRAFT</button>
             </div>
             
-            <button class="btn" onclick="addCommonBases()">➕ COMMON BASES</button>
-            
             <div class="segment-control">
                 <button class="segment-btn active" onclick="setSort('cost')">123</button>
                 <button class="segment-btn" onclick="setSort('aspect')">🎨</button>
@@ -341,6 +371,8 @@
 
             <ul id="deck-list"></ul>
             <div class="sb-footer">
+                <button class="btn-base-add" onclick="showBasePicker()">+ ADD COMMON BASE</button>
+
                 <div class="save-load-container">
                     <button class="btn btn-save" onclick="saveDeck()">SAVE DECK</button>
                     <button class="btn btn-load" onclick="loadDeck()">LOAD DECK</button>
@@ -349,6 +381,11 @@
                 <button class="btn" style="width:100%; margin-top:8px; background:#522; border-color:#844; color:#faa;" onclick="clearDeck()">CLEAR DECK</button>
             </div>
         </div>
+    </div>
+
+    <div id="base-picker-modal" onclick="this.style.display='none'">
+        <h2 style="color:white; font-family:'Orbitron'; margin-bottom: 20px; text-shadow: 0 0 10px #fff;">SELECT A COMMON BASE</h2>
+        <div id="base-picker-content" onclick="event.stopPropagation()"></div>
     </div>
 
     <div id="modal" onclick="closeModal()">
@@ -418,7 +455,6 @@ function handleFileSelect(files) {
 function ensureLOFBases(db) {
     if (!db['LOF']) db['LOF'] = {leaders:[], bases:[], deck:[]};
     
-    // Check if we need to inject
     const existing = db['LOF'].bases;
     LOF_MISSING_BASES.forEach(base => {
         if (!existing.find(b => b.id === base.id)) {
@@ -539,7 +575,6 @@ function parseCSVandInstall(csvText) {
         count++;
     }
 
-    // *** MANUAL INJECTION OF LOF BASES ***
     ensureLOFBases(db);
 
     LOCAL_DATABASE = db;
@@ -584,7 +619,6 @@ function setMode(mode) {
 // --- NEW SORT FUNCTION ---
 function setSort(mode) {
     currentSortMode = mode;
-    
     const btns = document.querySelectorAll('.segment-btn');
     btns.forEach(b => b.classList.remove('active'));
     
@@ -594,6 +628,77 @@ function setSort(mode) {
     
     initBoard();
     renderBoard();
+}
+
+// --- VISUAL BASE PICKER LOGIC ---
+function showBasePicker() {
+    const setCode = document.getElementById('setSelect').value;
+    const d = getSetData(setCode);
+    const modal = document.getElementById('base-picker-modal');
+    const content = document.getElementById('base-picker-content');
+    content.innerHTML = '';
+
+    // Get common bases
+    let pool = [];
+    if(d.bases && d.bases.length > 0) {
+        pool = d.bases.filter(b => b.rarity === 'Common');
+    }
+    
+    // Fallback if current set has no common bases (use all common bases from DB)
+    if(pool.length === 0) {
+        Object.values(LOCAL_DATABASE).forEach(s => {
+            pool.push(...s.bases.filter(b => b.rarity === 'Common'));
+        });
+    }
+
+    if(pool.length === 0) {
+        content.innerHTML = "<p style='color:white'>No common bases found in database.</p>";
+        modal.style.display = 'flex';
+        return;
+    }
+
+    // Unique bases only (by name)
+    const uniqueBases = [];
+    const map = new Map();
+    for (const item of pool) {
+        if(!map.has(item.name)){
+            map.set(item.name, true);
+            uniqueBases.push(item);
+        }
+    }
+    
+    // Sort by aspect
+    uniqueBases.sort((a, b) => a.aspect.localeCompare(b.aspect));
+
+    uniqueBases.forEach(b => {
+        const el = document.createElement('div');
+        el.className = 'picker-card';
+        el.innerHTML = `<img src="${b.img}">`;
+        el.onclick = () => {
+            addBaseToDeck(b);
+            modal.style.display = 'none';
+        };
+        content.appendChild(el);
+    });
+    
+    modal.style.display = 'flex';
+}
+
+function addBaseToDeck(base) {
+    // Remove existing base from deck
+    Object.keys(myDeck).forEach(k => {
+        if(myDeck[k].type === 'Base') delete myDeck[k];
+    });
+
+    const key = `${base.set}_${base.id}`;
+    myDeck[key] = {...base, count: 1}; 
+    
+    updateSidebar();
+    playAudio('snd-copy');
+    const t = document.getElementById('toast'); 
+    t.innerText = "BASE ADDED!";
+    t.className = 'show'; 
+    setTimeout(()=>t.className='', 2000);
 }
 
 // --- SEALED LOGIC ---
@@ -634,43 +739,10 @@ function startDraft() {
     currentView = []; 
     renderBoard();
     
-    d.bases.forEach(b => {
-        if(b.rarity === 'Common') {
-            currentView.push({...b, uid: 'base_'+b.id, column: 'Base'});
-        }
-    });
-    renderBoard();
-
+    // We don't auto-add bases to board anymore, users use the picker
+    
     document.getElementById('draft-zone').style.display = 'flex';
     nextDraftStep();
-}
-
-function addCommonBases() {
-    const setCode = document.getElementById('setSelect').value;
-    const d = getSetData(setCode);
-    let added = 0;
-    
-    if(!d.bases || d.bases.length === 0) {
-        alert("No bases found in database for " + setCode);
-        return;
-    }
-
-    d.bases.forEach(b => {
-        if(b.rarity === 'Common') {
-            currentView.push({...b, uid: Date.now() + Math.random(), column: 'Base'});
-            added++;
-        }
-    });
-    
-    if(added > 0) {
-        renderBoard();
-        const t = document.getElementById('toast'); 
-        t.innerText = `ADDED ${added} BASES!`;
-        t.className = 'show'; 
-        setTimeout(()=>t.className='', 2000);
-    } else {
-        alert("No common bases found for " + setCode);
-    }
 }
 
 function nextDraftStep() {
@@ -855,16 +927,6 @@ function renderBoard() {
     });
 }
 
-function toggleSort() {
-    const btn = document.getElementById('btn-sort');
-    if(currentSortMode === 'cost') currentSortMode = 'aspect';
-    else if(currentSortMode === 'aspect') currentSortMode = 'rarity';
-    else currentSortMode = 'cost';
-    
-    btn.innerText = `SORT: ${currentSortMode.toUpperCase()}`;
-    initBoard(); renderBoard();
-}
-
 function addToDeck(id, set) {
     const idx = currentView.findIndex(c => c.id===id && c.set===set);
     if(idx===-1) return;
@@ -907,10 +969,14 @@ function updateSidebar() {
         li.draggable = true;
         li.ondragstart = e => e.dataTransfer.setData("text/plain", JSON.stringify({id:c.id, set:c.set, source:'deck'}));
         li.style.borderLeftColor = (c.type==='Leader'?'#fff':c.type==='Base'?'#aaa':`var(--c-${c.aspect})`);
+        
         li.innerHTML = `<span>${c.name}</span> <span style="color:var(--accent);font-weight:bold;">${c.count}</span>`;
+        
         li.onclick = () => removeFromDeck(`${c.set}_${c.id}`);
-        li.onmouseenter = e => showPreview(e,c.img,c.type);
-        li.onmouseleave = hidePreview; li.onmousemove = e => movePreview(e);
+        li.onmouseenter = e => showPreview(e, c.img, c.type);
+        li.onmouseleave = hidePreview;
+        li.onmousemove = e => movePreview(e);
+        
         ul.appendChild(li);
     });
     document.getElementById('deck-count').innerText = sum;
@@ -1004,7 +1070,13 @@ function loadDeck() {
 
 const tip = document.getElementById('preview-tooltip');
 let isP = false, isT = false;
-function showPreview(e,src,t) { isP=true; tip.innerHTML=`<img src="${src}">`; tip.className=t==='Leader'||t==='Base'?'big-preview':''; tip.style.display='block'; reqUpd(e); }
+function showPreview(e,src,t) { 
+    isP=true; 
+    tip.innerHTML=`<img src="${src}">`; 
+    tip.className=t==='Leader'||t==='Base'?'big-preview':''; 
+    tip.style.display='block'; 
+    reqUpd(e); 
+}
 function movePreview(e) { if(isP) reqUpd(e); }
 function hidePreview() { isP=false; tip.style.display='none'; }
 function reqUpd(e) { if(!isT) { requestAnimationFrame(()=>{ updPos(e); isT=false; }); isT=true; } }
