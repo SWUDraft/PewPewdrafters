@@ -9,19 +9,19 @@
 
     <style>
         :root {
-            --bg-deep: #050505;
-            --bg-panel: rgba(20, 20, 20, 0.85);
-            --border-glow: rgba(255, 255, 255, 0.1);
-            
+            --bg-deep: #0b0b0b;
             --accent: #FFE81F; 
+            --accent-dim: rgba(255, 232, 31, 0.2);
             --accent-glow: rgba(255, 232, 31, 0.6);
             --text-main: #e0e0e0;
-            --text-dim: #888;
             
+            /* Aspect Colors */
             --c-Aggression: #bd1e2d; --c-Command: #377d22; --c-Cunning: #f2c035;    
             --c-Vigilance: #006eb6; --c-Villainy: #222222; --c-Heroism: #eeeeee; 
             
-            --glass: blur(10px);
+            --glass: blur(12px);
+            --panel-bg: rgba(20, 20, 25, 0.85);
+            --border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         body { 
@@ -32,50 +32,49 @@
             height: 100vh; 
             display: flex; flex-direction: column; overflow: hidden; 
         }
-
+        
+        /* Dark overlay on background */
         body::before {
-            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
-            background: rgba(5, 5, 5, 0.85); z-index: -1;
+            content: ''; position: absolute; inset: 0;
+            background: rgba(5, 5, 8, 0.85); z-index: -1;
         }
 
         /* --- HEADER --- */
         header { 
-            padding: 0 25px; 
-            height: 70px;
-            background: rgba(10, 10, 10, 0.9);
-            border-bottom: 1px solid var(--border-glow);
+            padding: 0 20px; height: 70px;
+            background: rgba(10, 10, 10, 0.8);
+            border-bottom: var(--border);
             backdrop-filter: var(--glass);
             display: flex; align-items: center; justify-content: space-between; 
-            z-index: 5000; box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            z-index: 5000; box-shadow: 0 4px 30px rgba(0,0,0,0.7);
         }
         
         h1 { 
-            font-family: 'Orbitron'; color: var(--accent); font-size: 20px; 
+            font-family: 'Orbitron'; color: var(--accent); font-size: 22px; 
             letter-spacing: 2px; text-shadow: 0 0 15px var(--accent-glow); margin: 0; 
-            display: flex; align-items: center; gap: 10px;
         }
         
-        .controls { display: flex; gap: 15px; align-items: center; }
+        .controls { display: flex; gap: 12px; align-items: center; }
         
         select, input { 
-            background: #151515; color: #fff; border: 1px solid #444; 
+            background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #444; 
             padding: 8px 12px; font-family: 'Orbitron'; font-size: 13px; 
             border-radius: 4px; outline: none; transition: 0.3s; text-transform: uppercase;
         }
-        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-        input[type="number"] { width: 50px; text-align: center; }
+        select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-dim); }
+        input[type="number"] { width: 50px; text-align: center; font-weight: bold; }
         
         button.btn { 
-            background: rgba(255, 255, 255, 0.05); color: #ccc; 
+            background: rgba(255, 255, 255, 0.08); color: #ccc; 
             border: 1px solid rgba(255,255,255,0.2);
-            padding: 9px 18px; font-family: 'Orbitron'; cursor: pointer; transition: all 0.2s; 
-            border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 9px 20px; font-family: 'Orbitron'; cursor: pointer; transition: all 0.2s; 
+            border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
         }
         button.btn:hover { 
             background: var(--accent); color: #000; 
             border-color: var(--accent); 
-            box-shadow: 0 0 15px var(--accent-glow); 
-            transform: translateY(-1px);
+            box-shadow: 0 0 20px var(--accent-glow); 
+            transform: translateY(-2px);
         }
         button.btn-action { border-color: var(--accent); color: var(--accent); }
         button.btn-action:hover { background: var(--accent); color: #000; }
@@ -84,17 +83,17 @@
         button.btn-reset:hover { background: #d44; color: #fff; border-color: #f66; box-shadow: 0 0 15px rgba(220, 68, 68, 0.6); }
 
         /* MODE SWITCHER */
-        .mode-switch { display: flex; background: #000; border: 1px solid #333; border-radius: 4px; overflow: hidden; }
-        .mode-btn { padding: 9px 16px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px; color: #666; transition: 0.2s; }
+        .mode-switch { display: flex; background: #000; border: 1px solid #444; border-radius: 4px; overflow: hidden; }
+        .mode-btn { padding: 9px 16px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px; color: #666; transition: 0.2s; }
         .mode-btn:hover { color: #fff; }
-        .mode-btn.active { background: #222; color: var(--accent); font-weight: bold; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .mode-btn.active { background: #222; color: var(--accent); font-weight: bold; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
 
-        #db-status { font-size: 10px; color: #555; font-family: 'Orbitron'; margin-left: 10px; }
+        #db-status { font-size: 10px; color: #555; font-family: 'Orbitron'; margin-left: 10px; padding: 4px 8px; border: 1px solid #333; border-radius: 4px; }
 
         /* --- MAIN AREA --- */
         #main-area { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
         #board { 
-            flex: 1; display: flex; gap: 10px; padding: 20px; overflow-x: auto; 
+            flex: 1; display: flex; gap: 12px; padding: 20px; overflow-x: auto; 
             align-items: flex-start; scroll-behavior: smooth;
         }
 
@@ -110,73 +109,83 @@
         }
         #draft-info { 
             font-family: 'Orbitron'; color: #fff; font-size: 32px; margin-bottom: 40px; 
-            text-shadow: 0 0 20px var(--accent); letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--accent); letter-spacing: 4px; font-weight: 900;
         }
         #draft-hand {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; 
-            width: 100%; max-width: 1300px; padding-bottom: 50px;
+            width: 100%; max-width: 1400px; padding-bottom: 50px;
         }
         .draft-card {
-            width: 180px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            width: 190px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             cursor: pointer; border-radius: 9px; position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         }
         .draft-card:hover { 
-            transform: scale(1.1) translateY(-15px); 
-            box-shadow: 0 0 35px var(--accent-glow); outline: 2px solid var(--accent);
+            transform: scale(1.12) translateY(-20px); z-index: 10;
+            box-shadow: 0 0 35px var(--accent-glow); outline: 3px solid var(--accent);
         }
         .draft-card img { width: 100%; border-radius: 9px; display: block; }
 
         /* --- COLUMNS --- */
         .column { 
-            background: rgba(15, 15, 15, 0.7); 
-            border: 1px solid rgba(255,255,255,0.05); 
+            background: var(--panel-bg); 
+            border: var(--border); 
             border-radius: 8px; 
             display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; 
-            height: 100%; min-width: 170px; width: 170px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;
+            height: 100%; min-width: 180px; width: 180px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
             backdrop-filter: blur(5px);
         }
-        .column.drag-over { background: rgba(50, 50, 50, 0.8); border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+        .column.drag-over { background: rgba(60, 60, 65, 0.9); border-color: var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
         .col-header { 
-            padding: 10px; display: flex; justify-content: space-between; align-items: center;
-            font-family: 'Orbitron'; font-weight: 800; font-size: 16px; 
+            padding: 12px; display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Orbitron'; font-weight: 900; font-size: 18px; 
             border-bottom: 2px solid transparent; background: rgba(0,0,0,0.6);
-            letter-spacing: 1px;
+            letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
         .col-toggle {
-            background: transparent; border: none; color: #555; cursor: pointer; font-size: 16px; 
+            background: transparent; border: 1px solid #444; color: #777; cursor: pointer; font-size: 14px; 
+            width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; border-radius: 4px;
         }
-        .col-toggle:hover { color: #fff; }
+        .col-toggle:hover { color: var(--accent); border-color: var(--accent); }
 
-        .ch-Leader { border-color: #fff; color: #fff; }
-        .ch-Base { border-color: #aaa; color: #aaa; }
-        .ch-Pool { border-color: #fa5; color: #fa5; }
-        .ch-cost { border-color: #444; color: #eee; font-size: 20px; }
+        /* FLIP BUTTON STYLE */
+        .btn-flip {
+            font-size: 10px; padding: 2px 8px; border: 1px solid #555; background: rgba(50,50,50,0.5); color: #ddd;
+            border-radius: 3px; margin-left: auto; margin-right: 8px; cursor: pointer; font-family: 'Orbitron';
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-flip:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        .ch-Leader { border-bottom-color: #fff; color: #fff; }
+        .ch-Base { border-bottom-color: #aaa; color: #aaa; }
+        .ch-Pool { border-bottom-color: #fa5; color: #fa5; }
+        .ch-cost { border-bottom-color: #444; color: #eee; font-size: 24px; }
         
         .col-content { 
             flex: 1; overflow-y: auto; padding: 15px 10px 100px 10px; 
             display: flex; flex-direction: column; align-items: center; 
-            scrollbar-width: thin; scrollbar-color: #333 #111;
+            scrollbar-width: thin; scrollbar-color: #444 #111;
         }
 
         /* --- CARD ITEMS --- */
         .card-item { 
             position: relative; background: #000; border-radius: 9px; cursor: grab; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
-            transition: transform 0.1s, margin 0.3s; width: 100%; z-index: 1; border: 1px solid #222;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+            transition: transform 0.1s, margin 0.3s; width: 100%; z-index: 1; border: 1px solid #333;
         }
         /* Stack effect */
-        .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -170px; }
-        .col-content:hover .card-item:not(:first-child) { margin-top: -120px; }
+        .col-content:not(#list-Pool):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -180px; }
+        .col-content:hover .card-item:not(:first-child) { margin-top: -130px; }
         
-        .card-item:hover { transform: scale(1.05); z-index: 100 !important; border-color: var(--accent); box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
+        .card-item:hover { transform: scale(1.1); z-index: 100 !important; border-color: var(--accent); box-shadow: 0 0 25px rgba(0,0,0,0.9); }
         .card-item img { width: 100%; border-radius: 9px; display: block; pointer-events: none; }
         
+        /* Foil shine */
         .shiny::after {
             content: ''; position: absolute; top: 0; left: 0; right:0; bottom:0;
-            background: linear-gradient(125deg, transparent 40%, rgba(255,255,255,0.15) 45%, transparent 50%);
-            pointer-events: none;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 45%, transparent 50%);
+            pointer-events: none; border-radius: 9px;
         }
         
         .card-actions { 
@@ -185,77 +194,90 @@
             border-radius: 9px; backdrop-filter: blur(2px); 
         }
         .card-item:hover .card-actions { display: flex; }
-        .add-icon { font-size: 30px; color: var(--accent); cursor: pointer; }
+        .add-icon { 
+            font-size: 24px; color: var(--accent); cursor: pointer; 
+            width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.8);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
 
         /* --- SIDEBAR --- */
         #sidebar { 
-            width: 340px; background: rgba(12, 12, 12, 0.95); 
-            border-left: 1px solid #333; display: flex; flex-direction: column; 
-            z-index: 4000; flex-shrink: 0; backdrop-filter: blur(10px);
+            width: 350px; background: rgba(15, 15, 18, 0.95); 
+            border-left: 1px solid #444; display: flex; flex-direction: column; 
+            z-index: 4000; flex-shrink: 0; backdrop-filter: blur(15px);
+            box-shadow: -5px 0 20px rgba(0,0,0,0.5);
         }
         .sb-header { 
-            padding: 15px; background: rgba(20,20,20,0.9); border-bottom: 1px solid #333; 
-            font-family: 'Orbitron'; font-size: 14px; text-align: center; color: var(--accent); letter-spacing: 2px;
+            padding: 15px; background: rgba(25,25,25,0.95); border-bottom: 1px solid #333; 
+            font-family: 'Orbitron'; font-size: 16px; text-align: center; color: var(--accent); letter-spacing: 2px;
         }
         
         /* MANA CURVE GRAPHIC */
-        #stats-panel { padding: 15px 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid #333; }
+        #stats-panel { padding: 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid #333; }
         #mana-curve { 
-            display: flex; align-items: flex-end; height: 90px; gap: 8px; margin-top: 10px; 
-            border-bottom: 1px solid #444; padding-bottom: 2px;
+            display: flex; align-items: flex-end; height: 100px; gap: 6px; margin-top: 5px; 
+            border-bottom: 1px solid #555; padding-bottom: 2px;
         }
         .mc-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; }
-        .mc-val { font-size: 10px; color: #fff; margin-bottom: 2px; font-weight: bold; }
+        .mc-val { font-size: 10px; color: #fff; margin-bottom: 4px; font-weight: bold; text-shadow: 0 1px 2px #000; }
         .mc-bar { 
-            width: 100%; min-height: 2px; border-radius: 2px 2px 0 0; 
-            background: linear-gradient(to top, #444, #888);
+            width: 100%; min-height: 2px; border-radius: 3px 3px 0 0; 
+            background: linear-gradient(to top, #444, #999);
             transition: height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0.8;
+            opacity: 0.9; box-shadow: 0 0 5px rgba(255,255,255,0.1);
         }
-        .mc-bar:hover { opacity: 1; filter: brightness(1.2); }
-        .mc-label { font-size: 10px; color: #666; margin-top: 5px; font-family: 'Orbitron'; }
+        .mc-bar:hover { opacity: 1; filter: brightness(1.3); box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .mc-label { font-size: 10px; color: #777; margin-top: 6px; font-family: 'Orbitron'; }
         
-        .arena-stats { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; color: #888; font-family: 'Orbitron'; }
-        .arena-stats span span { color: #fff; font-weight: bold; margin-left: 5px; }
+        .arena-stats { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color: #999; font-family: 'Orbitron'; }
+        .arena-stats span span { color: #fff; font-weight: bold; margin-left: 5px; font-size: 14px; }
 
         #deck-list { 
             flex: 1; overflow-y: auto; padding: 10px; list-style: none; margin: 0; 
             scrollbar-width: thin; 
         }
         #deck-list li { 
-            background: rgba(30,30,30,0.6); padding: 8px 12px; margin-bottom: 4px; 
+            background: rgba(40,40,40,0.4); padding: 8px 12px; margin-bottom: 5px; 
             display: flex; justify-content: space-between; align-items: center; 
             border-left: 3px solid #555; font-size: 13px; border-radius: 0 4px 4px 0; 
-            cursor: pointer; transition: all 0.2s; 
+            cursor: pointer; transition: all 0.2s; border: 1px solid transparent; border-left-width: 4px;
         }
-        #deck-list li:hover { background: #333; transform: translateX(4px); }
+        #deck-list li:hover { background: #333; transform: translateX(5px); border-color: #555; }
         
-        .sb-footer { padding: 15px; border-top: 1px solid #333; background: rgba(15,15,15,0.9); }
+        .sb-footer { padding: 15px; border-top: 1px solid #333; background: rgba(20,20,20,0.95); }
         .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
         .btn-full { width: 100%; margin-bottom: 8px; }
+        
+        .btn-base-add { 
+            border-color: #666; color: #aaa; margin-bottom: 15px; border-style: dashed; 
+        }
+        .btn-base-add:hover { border-color: #fff; color: #fff; border-style: solid; background: rgba(255,255,255,0.1); }
 
         /* BASE PICKER MODAL */
         #base-picker-modal {
             display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); z-index: 8000;
+            background: rgba(0,0,0,0.95); z-index: 8000;
             justify-content: center; align-items: center; flex-direction: column;
         }
         #base-picker-content {
-            background: #151515; border: 1px solid #444; padding: 20px; border-radius: 8px;
-            max-width: 800px; max-height: 80vh; overflow-y: auto;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px;
+            background: #151515; border: 1px solid #444; padding: 30px; border-radius: 12px;
+            max-width: 900px; max-height: 85vh; overflow-y: auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
-        .picker-card { cursor: pointer; transition: 0.2s; }
-        .picker-card:hover { transform: scale(1.05); outline: 2px solid var(--accent); }
-        .picker-card img { width: 100%; border-radius: 6px; }
+        .picker-card { cursor: pointer; transition: 0.2s; position: relative; }
+        .picker-card:hover { transform: scale(1.1); z-index: 10; }
+        .picker-card img { width: 100%; border-radius: 8px; display: block; box-shadow: 0 5px 15px #000; }
+        .picker-card:hover img { outline: 3px solid var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
 
         /* PREVIEW TOOLTIP */
         #preview-tooltip { 
             position: fixed; display: none; z-index: 6000; pointer-events: none; 
-            background: rgba(0,0,0,0.8); border: 1px solid #555; border-radius: 8px; 
-            padding: 2px; box-shadow: 0 10px 40px rgba(0,0,0,1); 
+            background: rgba(0,0,0,0.9); border: 1px solid #555; border-radius: 8px; 
+            padding: 0; box-shadow: 0 20px 60px rgba(0,0,0,1); overflow: hidden;
         }
-        #preview-tooltip img { width: 320px; display: block; border-radius: 6px; }
+        #preview-tooltip img { width: 340px; display: block; }
 
     </style>
 </head>
@@ -271,9 +293,9 @@
             </div>
 
             <select id="setSelect">
+                <option value="TWI">Twilight of the Republic (TWI)</option>
                 <option value="LOF">Legends of the Force (LOF)</option>
                 <option value="JTL">Jump to Lightspeed (JTL)</option>
-                <option value="TWI">Twilight of the Republic (TWI)</option>
                 <option value="SHD">Shadows of the Galaxy (SHD)</option>
                 <option value="SOR">Spark of Rebellion (SOR)</option>
             </select>
@@ -288,8 +310,8 @@
             </div>
             
             <button class="btn" onclick="toggleSort()" id="btn-sort">SORT: COST</button>
-            <button class="btn btn-reset" onclick="resetDatabase()">RESET DB</button>
-            <span id="db-status">DB: Loading...</span>
+            <button class="btn btn-reset" onclick="resetDatabase()">RESET</button>
+            <span id="db-status">DB: INITIALIZING</span>
         </div>
     </header>
 
@@ -315,7 +337,7 @@
             <ul id="deck-list"></ul>
             
             <div class="sb-footer">
-                <button class="btn btn-full" style="border-color: #666; color:#aaa; margin-bottom:15px;" onclick="showBasePicker()">+ ADD COMMON BASE</button>
+                <button class="btn btn-full btn-base-add" onclick="showBasePicker()">+ ADD COMMON BASE</button>
                 <div class="btn-group">
                     <button class="btn btn-full" onclick="saveDeck()">SAVE</button>
                     <button class="btn btn-full" onclick="loadDeck()">LOAD</button>
@@ -327,14 +349,223 @@
     </div>
 
     <div id="base-picker-modal" onclick="this.style.display='none'">
-        <h2 style="color:white; font-family:'Orbitron'">SELECT A BASE</h2>
+        <h2 style="color:white; font-family:'Orbitron'; margin-bottom: 20px; text-shadow: 0 0 10px #fff;">SELECT A COMMON BASE</h2>
         <div id="base-picker-content" onclick="event.stopPropagation()"></div>
     </div>
 
     <div id="preview-tooltip"></div>
-    <div style="display:none;" id="upload-trigger"><input type="file" id="csvFile" accept=".csv"></div>
 
 <script>
+/* --- EMBEDDED DATABASE (To fix dataset missing error) --- */
+const RAW_CSV_DATA = `Card ID,Non-Foil,Foil,Hyperspace,F-Hyperspace,Playset,Total,Tradeable,Missing,Rarity,Unique,Aspect(s),Unnamed: 12,Card Name,Cost,Power,HP,Arena,Keyword(s),Type(s),Trait(s),Restricted,Banned,Errata,SET NAME,SPARK OF REBELLION,Source_Sheet,Pilot HP,Legends of the Force
+001,nan,nan,nan,nan,nan,0,NO,1,R,nan,Vigilance,Villainy,Kylo Ren,7.0,5.0,5.0,Ground,Sentinel,"Leader, Leader Unit","Force, First Order",nan,nan,nan,Highlight Missing Cards,,LOF,,False
+002,nan,nan,nan,nan,nan,0,NO,1,C,nan,Vigilance,Villainy,Mother Talzin,5.0,3.0,7.0,Ground,nan,"Leader, Leader Unit","Force, Night",nan,nan,nan,nan,,LOF,,nan
+003,nan,nan,nan,nan,nan,0,NO,1,C,nan,Vigilance,Heroism,Ahsoka Tano,6.0,5.0,6.0,Ground,Sentinel,"Leader, Leader Unit","Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+004,nan,nan,nan,nan,nan,0,NO,1,R,nan,Vigilance,Heroism,Kanan Jarrus,6.0,3.0,6.0,Ground,Shielded,"Leader, Leader Unit","Force, Jedi, Rebel, Spectre",nan,nan,nan,nan,,LOF,,nan
+005,nan,nan,nan,nan,nan,0,NO,1,R,nan,Command,Villainy,Morgan Elsbeth,5.0,3.0,6.0,Ground,nan,"Leader, Leader Unit","Force, Imperial, Night",nan,nan,nan,nan,,LOF,,nan
+006,nan,nan,nan,nan,nan,0,NO,1,C,nan,Command,Villainy,Supreme Leader Snoke,6.0,4.0,7.0,Ground,nan,"Leader, Leader Unit","Force, First Order, Official",nan,nan,nan,nan,,LOF,,nan
+007,nan,nan,nan,nan,nan,0,NO,1,R,nan,Command,Heroism,Avar Kriss,9.0,4.0,10.0,Ground,Overwhelm,"Leader, Leader Unit","Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+008,nan,nan,nan,nan,nan,0,NO,1,C,nan,Command,Heroism,Obi-Wan Kenobi,5.0,3.0,6.0,Ground,nan,"Leader, Leader Unit","Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+009,nan,nan,nan,nan,nan,0,NO,1,S,nan,Aggression,Villainy,Darth Maul,6.0,5.0,6.0,Ground,nan,"Leader, Leader Unit","Force, Sith",nan,nan,nan,nan,,LOF,,nan
+010,nan,nan,nan,nan,nan,0,NO,1,C,nan,Aggression,Villainy,Third Sister,5.0,5.0,4.0,Ground,Hidden,"Leader, Leader Unit","Force, Imperial, Inquisitor",nan,nan,nan,nan,,LOF,,nan
+011,nan,nan,nan,nan,nan,0,NO,1,C,nan,Aggression,Heroism,Kit Fisto,5.0,1.0,6.0,Ground,Saboteur,"Leader, Leader Unit","Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+012,nan,nan,nan,nan,nan,0,NO,1,R,nan,Aggression,Heroism,Rey,7.0,6.0,8.0,Ground,nan,"Leader, Leader Unit","Force, Resistance",nan,nan,nan,nan,,LOF,,nan
+013,nan,nan,nan,nan,nan,0,NO,1,R,nan,Cunning,Villainy,Barriss Offee,6.0,4.0,7.0,Ground,nan,"Leader, Leader Unit","Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+014,nan,nan,nan,nan,nan,0,NO,1,C,nan,Cunning,Villainy,Grand Inquisitor,5.0,3.0,5.0,Ground,Shielded,"Leader, Leader Unit","Force, Imperial, Inquisitor",nan,nan,nan,nan,,LOF,,nan
+015,nan,nan,nan,nan,nan,0,NO,1,C,nan,Cunning,Heroism,Cal Kestis,4.0,3.0,4.0,Ground,nan,"Leader, Leader Unit","Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+016,nan,nan,nan,nan,nan,0,NO,1,S,nan,Cunning,Heroism,Qui-Gon Jinn,6.0,4.0,7.0,Ground,nan,"Leader, Leader Unit","Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+017,nan,nan,nan,nan,nan,0,NO,1,R,nan,Villainy,nan,Darth Revan,5.0,3.0,6.0,Ground,Restore 1,"Leader, Leader Unit","Force, Sith",nan,nan,nan,nan,,LOF,,nan
+018,nan,nan,nan,nan,nan,0,NO,1,R,nan,Heroism,nan,Anakin Skywalker,5.0,4.0,6.0,Ground,nan,"Leader, Leader Unit","Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+019,nan,nan,nan,nan,nan,0,NO,1,R,nan,Vigilance,nan,Vergence Temple,nan,nan,25.0,nan,nan,nan,nan,nan,nan,nan,nan,,LOF,,nan
+020,nan,nan,nan,nan,nan,0,NO,1,C,nan,Vigilance,nan,Nightsister Lair,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+021,nan,nan,nan,nan,nan,0,NO,1,C,nan,Vigilance,nan,Shadowed Undercity,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+022,nan,nan,nan,nan,nan,0,NO,1,R,nan,Command,nan,Mystic Monastery,nan,nan,25.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+023,nan,nan,nan,nan,nan,0,NO,1,C,nan,Command,nan,Jedi Temple,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+024,nan,nan,nan,nan,nan,0,NO,1,C,nan,Command,nan,Starlight Temple,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+025,nan,nan,nan,nan,nan,0,NO,1,R,nan,Aggression,nan,Temple of Destruction,nan,nan,25.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+026,nan,nan,nan,nan,nan,0,NO,1,C,nan,Aggression,nan,Fortress Vader,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+027,nan,nan,nan,nan,nan,0,NO,1,C,nan,Aggression,nan,Strangled Cliffs,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+028,nan,nan,nan,nan,nan,0,NO,1,R,nan,Cunning,nan,Tomb of Eilram,nan,nan,25.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+029,nan,nan,nan,nan,nan,0,NO,1,C,nan,Cunning,nan,Crystal Caves,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+030,nan,nan,nan,nan,nan,0,NO,1,C,nan,Cunning,nan,The Holy City,nan,nan,28.0,nan,nan,Base,nan,nan,nan,nan,nan,,LOF,,nan
+031,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,Villainy,Karis,2.0,2.0,4.0,Ground,nan,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+032,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Villainy,Magistrate's Scout,3.0,2.0,4.0,Ground,Restore 2,Unit,"Imperial, Trooper",nan,nan,nan,nan,,LOF,,nan
+033,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,Villainy,Nameless Terror,3.0,3.0,3.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+034,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Villainy,Supremacy TIE/sf,3.0,3.0,3.0,Space,Sentinel,Unit,"First Order, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+035,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Villainy,Talzin's Assassin,4.0,4.0,4.0,Ground,nan,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+036,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,Villainy,Old Daka,5.0,6.0,6.0,Ground,nan,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+037,nan,nan,nan,nan,nan,0,NO,3,L,nan,Vigilance,Villainy,Darth Vader,6.0,5.0,6.0,Ground,nan,Unit,"Force, Imperial, Sith",nan,nan,nan,nan,,LOF,,nan
+038,nan,nan,nan,nan,nan,0,NO,3,R,nan,Vigilance,Villainy,Pong Krell,7.0,2.0,9.0,Ground,Grit,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+039,nan,nan,nan,nan,nan,0,NO,3,S,nan,Vigilance,Villainy,Darth Sidious,8.0,6.0,8.0,Ground,Restore 2,Unit,"Force, Separatist, Sith",nan,nan,nan,nan,,LOF,,nan
+040,nan,nan,nan,nan,nan,0,NO,3,R,nan,Vigilance,Villainy,Kylo Ren's Lightsaber,2.0,1.0,3.0,nan,nan,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+044,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Heroism,Loth-Wolf,2.0,3.0,4.0,Ground,Sentinel,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+045,nan,nan,nan,nan,nan,0,NO,3,R,nan,Vigilance,Heroism,Yaddle,2.0,2.0,4.0,Ground,Restore 1,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+046,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,Heroism,Ezra Bridger,3.0,3.0,5.0,Ground,nan,Unit,"Force, Jedi, Rebel, Spectre",nan,nan,nan,nan,,LOF,,nan
+048,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Heroism,Itinerant Warrior,4.0,4.0,4.0,Ground,Shielded,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+049,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Heroism,Jedi Guardian,5.0,4.0,8.0,Ground,nan,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+050,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,Heroism,Plo Koon,6.0,6.0,8.0,Ground,Grit,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+053,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,Heroism,Heirloom Lightsaber,2.0,2.0,2.0,nan,Restore 1,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+057,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,nan,Owen Lars,1.0,0.0,3.0,Ground,Restore 2,Unit,Fringe,nan,nan,nan,nan,,LOF,,nan
+058,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Guardian of the Whills,2.0,2.0,2.0,Ground,nan,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+059,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Nightsister Warrior,2.0,2.0,2.0,Ground,nan,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+060,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Padawan Starfighter,2.0,1.0,3.0,Space,nan,Unit,"Jedi, Republic, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+061,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Secretive Sage,2.0,2.0,2.0,Ground,Shielded,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+062,nan,nan,nan,nan,nan,0,NO,3,R,nan,Vigilance,nan,Axe Woves,3.0,2.0,2.0,Ground,Shielded,Unit,"Mandalorian, Trooper",nan,nan,nan,nan,,LOF,,nan
+063,nan,nan,nan,nan,nan,0,NO,3,R,nan,Vigilance,nan,Oggdo Bogdo,3.0,5.0,5.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+064,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Tauntaun,3.0,3.0,3.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+065,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,nan,Watto,3.0,1.0,6.0,Ground,nan,Unit,Fringe,nan,nan,nan,nan,,LOF,,nan
+066,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Awakened Specters,4.0,4.0,5.0,Ground,nan,Unit,"Night, Undead",nan,nan,nan,nan,,LOF,,nan
+069,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Graceful Purrgil,5.0,2.0,7.0,Space,Sentinel,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+070,nan,nan,nan,nan,nan,0,NO,3,L,nan,Vigilance,nan,Anakin Skywalker,6.0,5.0,7.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+071,nan,nan,nan,nan,nan,0,NO,3,C,nan,Vigilance,nan,Grappling Guardian,7.0,3.0,9.0,Space,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+072,nan,nan,nan,nan,nan,0,NO,3,U,nan,Vigilance,nan,Priestesses of the Force,7.0,6.0,8.0,Ground,nan,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+073,nan,nan,nan,nan,nan,0,NO,3,L,nan,Vigilance,nan,Mythosaur,9.0,10.0,10.0,Ground,Sheilded,Unit,"Mandalorian, Creature",nan,nan,nan,nan,,LOF,,nan
+080,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Villainy,Exegol Patroller,2.0,3.0,1.0,Space,Overwhelm,Unit,"First Order, Sith, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+081,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Villainy,Sith Legionnaire,2.0,2.0,2.0,Ground,nan,Unit,"Sith, Trooper",nan,nan,nan,nan,,LOF,,nan
+082,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Villainy,Vaneé,2.0,2.0,4.0,Ground,nan,Unit,"Imperial, Sith, Official",nan,nan,nan,nan,,LOF,,nan
+083,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,Villainy,Captain Enoch,3.0,1.0,5.0,Ground,nan,Unit,"Imperial, Trooper",nan,nan,nan,nan,,LOF,,nan
+084,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Villainy,Knight of Ren,3.0,4.0,4.0,Ground,nan,Unit,First Order,nan,nan,nan,nan,,LOF,,nan
+085,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Villainy,Praetorian Guard,3.0,2.0,5.0,Ground,Sentinel,Unit,First Order,nan,nan,nan,nan,,LOF,,nan
+086,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,Villainy,Drengir Spawn,4.0,3.0,3.0,Ground,Overwhelm,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+087,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Villainy,Eighth Brother,6.0,5.0,7.0,Ground,Ambush,Unit,"Force, Imperial, Inquisitor",nan,nan,nan,nan,,LOF,,nan
+088,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,Villainy,Eye of Sion,6.0,4.0,7.0,Space,"Hidden, Ambush, Overwhelm, Restore 1",Unit,"Imperial, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+089,nan,nan,nan,nan,nan,0,NO,3,L,nan,Command,Villainy,Supremacy,12.0,12.0,12.0,Space,Ambush,Unit,"First Order, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+090,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Villainy,Inquisitor's Lightsaber,2.0,1.0,3.0,nan,nan,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+092,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Heroism,Point Rain Reclaimer,1.0,1.0,3.0,Ground,nan,Unit,"Republic, Clone, Trooper",nan,nan,nan,nan,,LOF,,nan
+093,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Heroism,Gungi,2.0,2.0,5.0,Ground,nan,Unit,"Force, Jedi, Wookiee",nan,nan,nan,nan,,LOF,,nan
+094,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Heroism,Jedi Consular,2.0,1.0,4.0,Ground,nan,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+095,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Heroism,Lor San Tekka,2.0,3.0,2.0,Ground,nan,Unit,Resistance,nan,nan,nan,nan,,LOF,,nan
+096,nan,nan,nan,nan,nan,0,NO,3,S,nan,Command,Heroism,Obi-Wan Kenobi,3.0,3.0,5.0,Ground,Sentinel,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+097,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,Heroism,Eeth Koth,4.0,5.0,4.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+098,nan,nan,nan,nan,nan,0,NO,3,L,nan,Command,Heroism,Leia Organa,5.0,5.0,5.0,Space,nan,Unit,"Force, Resistance, Official",nan,nan,nan,nan,,LOF,,nan
+099,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,Heroism,Paladin Training Corvette,5.0,3.0,5.0,Space,nan,Unit,"Jedi, Republic, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+100,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Heroism,Kelleran Beq,7.0,7.0,7.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+101,nan,nan,nan,nan,nan,0,NO,3,L,nan,Command,Heroism,Yoda,8.0,5.0,9.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+102,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,Heroism,Yoda's Lightsaber,2.0,3.0,1.0,nan,nan,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+105,nan,nan,nan,nan,nan,0,NO,3,L,nan,Command,Command,Oppo Rancisis,3.0,3.0,5.0,Ground,All,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+106,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,Command,Acclamator Assault Ship,7.0,5.0,8.0,Space,nan,Unit,"Republic, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+107,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Village Tender,1.0,1.0,3.0,Ground,"Hidden, Restore",Unit,Ewok,nan,nan,nan,nan,,LOF,,nan
+108,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,nan,Malakili,2.0,1.0,4.0,Ground,nan,Unit,Underworld,nan,nan,nan,nan,,LOF,,nan
+109,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Mynock,2.0,2.0,4.0,Space,Overwhelm,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+110,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Hive Defense Wing,3.0,2.0,4.0,Space,Restore 1,Unit,"Separatist, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+111,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,nan,Maz Kanata,3.0,3.0,4.0,Ground,nan,Unit,Underworld,nan,nan,nan,nan,,LOF,,nan
+112,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Outer Rim Mystic,3.0,2.0,6.0,Ground,nan,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+113,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Jedi Temple Guards,4.0,2.0,4.0,Ground,"Ambush, Restore",Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+114,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Kaadu,4.0,4.0,4.0,Ground,Overwhelm,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+115,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,nan,Dagoyan Master,5.0,5.0,5.0,Ground,nan,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+116,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Relic Scavenger,5.0,4.0,6.0,Ground,Restore 2,Unit,Fringe,nan,nan,nan,nan,,LOF,,nan
+117,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,nan,Sifo-Dyas,5.0,4.0,4.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+118,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Terentatek,5.0,5.0,5.0,Ground,Ambush,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+119,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Hyperspace Wayfarer,6.0,4.0,10.0,Space,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+120,nan,nan,nan,nan,nan,0,NO,3,C,nan,Command,nan,Trident Assault Ship,6.0,6.0,6.0,Space,Overwhelm,Unit,"Separatist, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+121,nan,nan,nan,nan,nan,0,NO,3,R,nan,Command,nan,The Purrgil King,8.0,6.0,10.0,Space,Restore 4,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+122,nan,nan,nan,nan,nan,0,NO,3,U,nan,Command,nan,Pillio Star Compass,2.0,1.0,1.0,nan,nan,Upgrade,Item,nan,nan,nan,nan,,LOF,,nan
+129,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Villainy,Acolyte of the Beyond,2.0,2.0,3.0,Ground,nan,Unit,Sith,nan,nan,nan,nan,,LOF,,nan
+130,nan,nan,nan,nan,nan,0,NO,3,L,nan,Aggression,Villainy,HK-47,2.0,2.0,4.0,Ground,nan,Unit,"Sith, Droid",nan,nan,nan,nan,,LOF,,nan
+131,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Villainy,Strikeship,2.0,0.0,3.0,Space,"Raid 3, Overwhelm",Unit,"Underworld, Vehicle, Fighter, Nihil",nan,nan,nan,nan,,LOF,,nan
+132,nan,nan,nan,nan,nan,0,NO,3,L,nan,Aggression,Villainy,Grand Inquisitor,3.0,3.0,4.0,Ground,"Hidden, Raid 1",Unit,"Force, Imperial, Inquisitor",nan,nan,nan,nan,,LOF,,nan
+133,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Villainy,Purge Trooper,3.0,4.0,2.0,Ground,nan,Unit,"Imperial, Trooper",nan,nan,nan,nan,,LOF,,nan
+134,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,Villainy,Heavy Missile Gunship,4.0,4.0,3.0,Space,nan,Unit,"Separatist, Droid, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+135,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,Villainy,Scythe,4.0,3.0,5.0,Space,nan,Unit,"Imperial, Vehicle, Transport, Inquisitor",nan,nan,nan,nan,,LOF,,nan
+136,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Villainy,Thralls of the Coven,5.0,3.0,7.0,Ground,Raid 3 ,Unit,Night,nan,nan,nan,nan,,LOF,,nan
+137,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,Villainy,Savage Opress,6.0,9.0,6.0,Ground,Overwhelm,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+138,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,Villainy,Sith Holocron,1.0,1.0,1.0,nan,nan,Upgrade,"Sith, Item",nan,nan,nan,nan,,LOF,,nan
+140,nan,nan,nan,nan,nan,0,NO,3,S,nan,Aggression,Villainy,Darth Maul's Lightsaber,3.0,4.0,2.0,nan,Overwhelm,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+142,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,Heroism,Adi Gallia,2.0,2.0,4.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+143,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Heroism,Attuned Fyrnock,2.0,4.0,1.0,Ground,Hidden,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+144,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Heroism,Jedi Starfighter,2.0,1.0,4.0,Space,nan,Unit,"Jedi, Republic, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+145,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Heroism,Jedi Knight,3.0,3.0,3.0,Ground,nan,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+146,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,Heroism,Ki-Adi-Mundi,4.0,4.0,4.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+147,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,Heroism,Kit Fisto's Aethersprite,5.0,4.0,5.0,Space,Saboture,Unit,"Jedi, Republic, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+148,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,Heroism,Rey,5.0,5.0,5.0,Ground,nan,Unit,"Force, Jedi, Resistance",nan,nan,nan,nan,,LOF,,nan
+149,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,Heroism,Mace Windu,6.0,6.0,6.0,Ground,Overwhelm,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+150,nan,nan,nan,nan,nan,0,NO,3,L,nan,Aggression,Heroism,Cin Drallig,8.0,5.0,6.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+151,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,Heroism,Knight's Saber,2.0,3.0,2.0,nan,nan,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+153,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,Aggression,Paz Vizsla,5.0,3.0,6.0,Ground,nan,Unit,Mandalorian,nan,nan,nan,nan,,LOF,,nan
+154,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Witch of the Mist,1.0,1.0,3.0,Ground,Hidden,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+155,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,DRK-1 Probe Droid,2.0,2.0,3.0,Ground,nan,Unit,Droid,nan,nan,nan,nan,,LOF,,nan
+156,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,nan,Infused Brawler,2.0,2.0,2.0,Ground,nan,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+157,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Cartel Interceptor,3.0,2.0,3.0,Space,Raid 2,Unit,"Underworld, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+158,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Hyena Bomber,3.0,2.0,3.0,Space,nan,Unit,"Separatist, Droid, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+159,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Jedi In Hiding,3.0,3.0,3.0,Ground,Hidden,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+160,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,nan,Merrin,3.0,2.0,5.0,Ground,nan,Unit,"Force, Night",nan,nan,nan,nan,,LOF,,nan
+161,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Tuk'ata,3.0,4.0,2.0,Ground,Hidden,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+162,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Hunting Nexu,4.0,4.0,4.0,Ground,Raid 2,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+163,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,nan,Quinlan Vos,4.0,4.0,5.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+164,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Wampa,4.0,4.0,5.0,Ground,Overwhel,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+165,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,nan,Asajj Ventress,5.0,5.0,6.0,Ground,nan,Unit,"Force, Night, Bounty Hunter",nan,nan,nan,nan,,LOF,,nan
+166,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,nan,Blockade Runner,5.0,4.0,4.0,Space,Sabotur,Unit,"Rebel, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+167,nan,nan,nan,nan,nan,0,NO,3,U,nan,Aggression,nan,Saesee Tiin,5.0,4.0,6.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+168,nan,nan,nan,nan,nan,0,NO,3,C,nan,Aggression,nan,Ravenous Rathtar,6.0,8.0,5.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+169,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,nan,Invasion Control Ship,7.0,5.0,9.0,Space,Raid 2,Unit,"Separatist, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+170,nan,nan,nan,nan,nan,0,NO,3,L,nan,Aggression,nan,Bendu,8.0,10.0,10.0,Ground,nan,Unit,"Force, Creature",nan,nan,nan,nan,,LOF,,nan
+171,nan,nan,nan,nan,nan,0,NO,3,R,nan,Aggression,nan,Heavy Blaster Cannon,4.0,2.0,2.0,nan,nan,Upgrade,"Item, Weapon",nan,nan,nan,nan,,LOF,,nan
+178,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Villainy,Adept of Anger,1.0,1.0,3.0,Ground,nan,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+179,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,Villainy,Aurra Sing,2.0,1.0,4.0,Ground,"Hidden, Raid 2",Unit,"Underworld, Bounty Hunter",nan,nan,nan,nan,,LOF,,nan
+180,nan,nan,nan,nan,nan,0,NO,3,R,nan,Cunning,Villainy,Deceptive Shade,2.0,2.0,3.0,Ground,Ambush,Unit,"Sith, Undead",nan,nan,nan,nan,,LOF,,nan
+181,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Villainy,Banking Clan Shuttle,3.0,3.0,3.0,Space,Hidden,Unit,"Separatist, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+182,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Villainy,Nihil Marauder,3.0,1.0,5.0,Ground,Raid 3,Unit,"Underworld, Trooper, Nihil",nan,nan,nan,nan,,LOF,,nan
+183,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,Villainy,Shin Hati,3.0,4.0,2.0,Ground,"Hidden, Shielded",Unit,"Hidden, Shielded",nan,nan,nan,nan,,LOF,,nan
+184,nan,nan,nan,nan,nan,0,NO,3,R,nan,Cunning,Villainy,Second Sister,4.0,3.0,6.0,Ground,nan,Unit,"Force, Imperial, Inquisitor",nan,nan,nan,nan,,LOF,,nan
+185,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,Villainy,Baylan Skoll,5.0,5.0,5.0,Ground,Hidden,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+186,nan,nan,nan,nan,nan,0,NO,3,L,nan,Cunning,Villainy,Marchion Ro,6.0,6.0,7.0,Ground,Raid,Unit,"Underworld, Nihil",nan,nan,nan,nan,,LOF,,nan
+187,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Villainy,Corrupted Saber,2.0,2.0,1.0,nan,nan,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+190,nan,nan,nan,nan,nan,0,NO,3,S,nan,Cunning,Heroism,Anakin Skywalker,1.0,1.0,1.0,Ground,"Hidden, Shielded",Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+191,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,Heroism,BD-1,1.0,1.0,3.0,Ground,"Hidden, Saboteur",Unit,"Fringe, Droid",nan,nan,nan,nan,,LOF,,nan
+192,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Heroism,N-1 Starfighter,2.0,3.0,2.0,Space,nan,Unit,"Naboo, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+193,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Heroism,Youngling Padawan,2.0,2.0,3.0,Ground,nan,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+194,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Heroism,J-Type Nubian Starship,3.0,2.0,4.0,Space,nan,Unit,"Naboo, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+195,nan,nan,nan,nan,nan,0,NO,3,R,nan,Cunning,Heroism,Vernestra Rwoh,3.0,3.0,4.0,Ground,nan,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+196,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,Heroism,Jedi Sentinel,4.0,5.0,4.0,Ground,Sentinel,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+197,nan,nan,nan,nan,nan,0,NO,3,S,nan,Cunning,Heroism,Qui-Gon Jinn's Aethersprite,5.0,3.0,6.0,Space,nan,Unit,"Jedi, Republic, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+198,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,Heroism,Stinger Mantis,5.0,4.0,6.0,Space,nan,Unit,"Fringe, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+199,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,Heroism,Depa Billaba,6.0,5.0,7.0,Ground,"Ambush, Saboteur",Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+200,nan,nan,nan,nan,nan,0,NO,3,L,nan,Cunning,Heroism,Qui-Gon Jinn,7.0,7.0,5.0,Ground,Ambush,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+201,nan,nan,nan,nan,nan,0,NO,3,S,nan,Cunning,Heroism,Qui-Gon Jinn's Lightsaber,2.0,3.0,1.0,nan,nan,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+204,nan,nan,nan,nan,nan,0,NO,3,L,nan,Cunning,Cunning,Zuckuss,5.0,4.0,7.0,Ground,nan,Unit,"Force, Bounty Hunter",nan,nan,nan,nan,,LOF,,nan
+206,nan,nan,nan,nan,nan,0,NO,3,R,nan,Cunning,nan,Babu Frik,1.0,1.0,4.0,Ground,nan,Unit,Underworld,nan,nan,nan,nan,,LOF,,nan
+207,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Loth-Cat,2.0,2.0,1.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+208,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Mysterious Hermit,2.0,1.0,4.0,Ground,Ambush,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+209,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Tusken Tracker,3.0,2.0,4.0,Ground,"Raid 2, Hidden",Unit,Tusken,nan,nan,nan,nan,,LOF,,nan
+210,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Charging Phillak,4.0,3.0,4.0,Ground,"Ambush, Hidden",Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+211,nan,nan,nan,nan,nan,0,NO,3,U,nan,Cunning,nan,Dooku,4.0,5.0,4.0,Ground,Hidden,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+212,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Life Wind Sage,4.0,3.0,5.0,Ground,Raid 2,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+213,nan,nan,nan,nan,nan,0,NO,3,L,nan,Cunning,nan,The Legacy Run,5.0,3.0,3.0,Space,nan,Unit,"Republic, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+214,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Sorcerers of Tund,6.0,6.0,6.0,Ground,Sheilded,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+215,nan,nan,nan,nan,nan,0,NO,3,C,nan,Cunning,nan,Ascension Cable,2.0,1.0,3.0,nan,Saboteur,Upgrade,Item,nan,nan,nan,nan,,LOF,,nan
+228,nan,nan,nan,nan,nan,0,NO,3,C,nan,Villainy,nan,Forged Starfighter,1.0,1.0,1.0,Space,"Hidden, Raid 1",Unit,"Sith, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+229,nan,nan,nan,nan,nan,0,NO,3,U,nan,Villainy,nan,Kylo Ren,2.0,2.0,3.0,Ground,Overwhelm,Unit,"Force, First Order",nan,nan,nan,nan,,LOF,,nan
+230,nan,nan,nan,nan,nan,0,NO,3,C,nan,Villainy,nan,Fallen Jedi,3.0,3.0,4.0,Ground,nan,Unit,"Force, Jedi",nan,nan,nan,nan,,LOF,,nan
+231,nan,nan,nan,nan,nan,0,NO,3,S,nan,Villainy,nan,Darth Tyranus,4.0,4.0,3.0,Ground,"Shielded, Ambush",Unit,"Force, Separatist, Sith",nan,nan,nan,nan,,LOF,,nan
+232,nan,nan,nan,nan,nan,0,NO,3,C,nan,Villainy,nan,Sandtrooper Cavalry,4.0,2.0,6.0,Ground,Grit,Unit,"Imperial, Creature, Trooper",nan,nan,nan,nan,,LOF,,nan
+233,nan,nan,nan,nan,nan,0,NO,3,S,nan,Villainy,nan,Scimitar,4.0,3.0,4.0,Space,nan,Unit,"Sith, Vehicle, Transport",nan,nan,nan,nan,,LOF,,nan
+234,nan,nan,nan,nan,nan,0,NO,3,L,nan,Villainy,nan,Darth Malak,5.0,4.0,7.0,Ground,Overwhelm,Unit,"Force, Sith",nan,nan,nan,nan,,LOF,,nan
+235,nan,nan,nan,nan,nan,0,NO,3,U,nan,Villainy,nan,HK-87 Assassin Droid,5.0,4.0,4.0,Ground,nan,Unit,"Imperial, Droid",nan,nan,nan,nan,,LOF,,nan
+236,nan,nan,nan,nan,nan,0,NO,3,C,nan,Villainy,nan,Army of the Dead,6.0,7.0,6.0,Ground,nan,Unit,"Night, Undead",nan,nan,nan,nan,,LOF,,nan
+237,nan,nan,nan,nan,nan,0,NO,3,R,nan,Villainy,nan,The Son,7.0,6.0,8.0,Ground,nan,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+238,nan,nan,nan,nan,nan,0,NO,3,R,nan,Villainy,nan,Darth Revan's Lightsabers,2.0,2.0,2.0,nan,Grit,Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+242,nan,nan,nan,nan,nan,0,NO,3,C,nan,Heroism,nan,Refugee of The Path,1.0,0.0,3.0,Ground,Sentinel,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+243,nan,nan,nan,nan,nan,0,NO,3,U,nan,Heroism,nan,Caretaker Matron,2.0,0.0,4.0,Ground,nan,Unit,Fringe,nan,nan,nan,nan,,LOF,,nan
+244,nan,nan,nan,nan,nan,0,NO,3,U,nan,Heroism,nan,Jedi Vector,2.0,1.0,3.0,Space,nan,Unit,"Jedi, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+245,nan,nan,nan,nan,nan,0,NO,3,C,nan,Heroism,nan,Vulptex,2.0,3.0,2.0,Ground,Hidden,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+246,nan,nan,nan,nan,nan,0,NO,3,L,nan,Heroism,nan,Grogu,3.0,1.0,6.0,Ground,Hidden,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+247,nan,nan,nan,nan,nan,0,NO,3,C,nan,Heroism,nan,Gungan Warrior,3.0,3.0,2.0,Ground,"Shielded, Restore 1",Unit,"Gungan, Trooper",nan,nan,nan,nan,,LOF,,nan
+248,nan,nan,nan,nan,nan,0,NO,3,U,nan,Heroism,nan,Jocasta Nu,3.0,3.0,4.0,Ground,nan,Unit,"Force, Jedi, Republic",nan,nan,nan,nan,,LOF,,nan
+249,nan,nan,nan,nan,nan,0,NO,3,R,nan,Heroism,nan,Luke Skywalker,4.0,3.0,5.0,Ground,nan,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+250,nan,nan,nan,nan,nan,0,NO,3,C,nan,Heroism,nan,Medical Frigate,4.0,3.0,6.0,Space,nan,Unit,"Republic, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+251,nan,nan,nan,nan,nan,0,NO,3,C,nan,Heroism,nan,Blue Squadron Assault Wing,5.0,5.0,5.0,Space,Raid 1,Unit,"Republic, Vehicle, Fighter",nan,nan,nan,nan,,LOF,,nan
+252,nan,nan,nan,nan,nan,0,NO,3,R,nan,Heroism,nan,The Daughter,5.0,4.0,6.0,Ground,nan,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+253,nan,nan,nan,nan,nan,0,NO,0,C,nan,Heroism,nan,Longbeam Cruiser,6.0,6.0,6.0,Space,Restore 1,Unit,"Republic, Vehicle, Capital Ship",nan,nan,nan,nan,,LOF,,nan
+254,nan,nan,nan,nan,nan,0,NO,0,C,nan,nan,nan,Porg,0.0,1.0,1.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+255,nan,nan,nan,nan,nan,0,NO,1,C,nan,nan,nan,Curious Flock,1.0,1.0,1.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+256,nan,nan,nan,nan,nan,0,NO,1,C,nan,nan,nan,Gifted Urchin,2.0,1.0,4.0,Ground,nan,Unit,"Force, Fringe",nan,nan,nan,nan,,LOF,,nan
+257,nan,nan,nan,nan,nan,0,NO,1,C,nan,nan,nan,Kowakian Monkey-Lizard,2.0,2.0,1.0,Ground,Ambush,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+258,nan,nan,nan,nan,nan,0,NO,1,U,nan,nan,nan,Peli Motto,2.0,1.0,4.0,Ground,nan,Unit,Fringe,nan,nan,nan,nan,,LOF,,nan
+259,nan,nan,nan,nan,nan,0,NO,1,C,nan,nan,nan,Ravening Gundark,5.0,5.0,4.0,Ground,nan,Unit,Creature,nan,nan,nan,nan,,LOF,,nan
+260,nan,nan,nan,nan,nan,0,NO,1,L,nan,nan,nan,The Father,8.0,5.0,10.0,Ground,nan,Unit,Force,nan,nan,nan,nan,,LOF,,nan
+261,nan,nan,nan,nan,nan,0,NO,1,L,nan,nan,nan,Constructed Lightsaber,3.0,2.0,3.0,nan,"Restore 2, Raid 2, Sentinel",Upgrade,"Item, Weapon, Lightsaber",nan,nan,nan,nan,,LOF,,nan
+`;
+
 /* --- CONFIG & STATE --- */
 const COST_COLS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const ASPECT_COLS = ["Aggression", "Command", "Cunning", "Vigilance", "Villainy", "Heroism"];
@@ -344,69 +575,81 @@ let currentView = [];
 let appMode = 'sealed';
 let currentSortMode = 'cost';
 let draftState = { active: false, round: 1, packSize: 14, set: '', hand: [] };
+let viewLeaderBack = false;
 
 /* --- INITIALIZATION --- */
 window.onload = function() {
-    fetch('swu_komplet_database.csv')
-        .then(r => { if(!r.ok) throw new Error("No file"); return r.text(); })
-        .then(d => parseCSV(d))
-        .catch(e => {
-            // Check LocalStorage
-            const s = localStorage.getItem('SWU_DB_V2');
-            if(s) { 
-                LOCAL_DATABASE = JSON.parse(s); 
-                updateDBStatus(true);
-            } else {
-                document.getElementById('db-status').innerText = "CLICK TO UPLOAD";
-                document.getElementById('db-status').style.cursor = "pointer";
-                document.getElementById('db-status').onclick = () => document.getElementById('csvFile').click();
-            }
-        });
-    
-    document.getElementById('csvFile').onchange = e => {
-        const f = e.target.files[0];
-        if(f) { const r = new FileReader(); r.onload = evt => parseCSV(evt.target.result); r.readAsText(f); }
-    };
+    // 1. Try to load embedded data first (Fix for "Dataset Missing")
+    if (RAW_CSV_DATA && RAW_CSV_DATA.length > 100) {
+        parseCSV(RAW_CSV_DATA);
+    } else {
+        // 2. Fallback: Try LocalStorage
+        const s = localStorage.getItem('SWU_DB_V2');
+        if (s) {
+            LOCAL_DATABASE = JSON.parse(s);
+            updateDBStatus(true);
+        } else {
+            // 3. Last resort: Fetch
+            fetch('swu_komplet_database.csv')
+                .then(r => { if(!r.ok) throw new Error(); return r.text(); })
+                .then(d => parseCSV(d))
+                .catch(e => {
+                    document.getElementById('db-status').innerText = "DB ERROR: NO DATA";
+                    document.getElementById('db-status').style.color = "#f55";
+                });
+        }
+    }
     initBoard();
 };
 
 function parseCSV(text) {
     const lines = text.split(/\r?\n/);
     if(lines.length < 2) return;
-    const h = lines[0].split(/[;,]/).map(s => s.replace(/"/g, '').trim());
     
-    // Column Mapping
-    const map = {}; h.forEach((c,i) => map[c] = i);
+    // Header parsing
+    const hLine = lines[0];
+    const h = hLine.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+    
     const idxID = h.findIndex(c => c.includes("Card ID"));
-    const idxSet = h.findIndex(c => c.includes("Source") || c === "SET");
-    const idxName = map["Card Name"];
-    const idxCost = map["Cost"];
+    const idxSet = h.findIndex(c => c.includes("SET NAME") || c.includes("Source") || c.includes("Legends"));
+    const idxName = h.indexOf("Card Name");
+    const idxCost = h.indexOf("Cost");
     const idxType = h.findIndex(c => c.includes("Type"));
-    const idxRarity = map["Rarity"];
-    const idxArena = map["Arena"];
-    const idxAspect1 = map["Aspect(s)"];
+    const idxRarity = h.indexOf("Rarity");
+    const idxArena = h.indexOf("Arena");
+    const idxAspect1 = h.indexOf("Aspect(s)");
     const idxAspect2 = h.findIndex(c => c.includes("Unnamed"));
+
+    if(idxID === -1 || idxName === -1) { console.error("CSV Parse Error: Missing columns"); return; }
 
     const db = {};
     const setMap = {'TWL':'TWI', 'TWI':'TWI', 'SOR':'SOR', 'SHD':'SHD', 'JTL':'JTL', 'LOF':'LOF', 'SEC':'SEC'};
 
     for(let i=1; i<lines.length; i++) {
-        // Simple regex split for CSV (handles simple quotes)
+        // CSV Splitter that respects quotes
         let row = [];
         let cur = ''; let inQ = false;
-        for(let c of lines[i]) {
-            if(c === '"') { inQ = !inQ; }
-            else if((c===',' || c===';') && !inQ) { row.push(cur.trim()); cur=''; }
-            else { cur += c; }
+        for(let char of lines[i]) {
+            if(char === '"') { inQ = !inQ; }
+            else if(char === ',' && !inQ) { row.push(cur.trim()); cur=''; }
+            else { cur += char; }
         }
         row.push(cur.trim());
 
         if(row.length < 5) continue;
 
-        const rawSet = row[idxSet] ? row[idxSet].replace(/"/g,'') : '';
+        // Extract Set
+        let rawSet = "LOF"; // Default fallback
+        if(idxSet !== -1 && row[idxSet]) rawSet = row[idxSet].replace(/"/g,'');
+        
+        // Hardcode fix for data chunk
+        if(lines[i].includes(",LOF,")) rawSet = "LOF";
+        if(lines[i].includes(",SEC,")) rawSet = "SEC";
+        if(lines[i].includes(",JTL,")) rawSet = "JTL";
+        if(lines[i].includes(",TWI,")) rawSet = "TWI";
+        
         const setCode = setMap[rawSet] || rawSet;
-        if(!setCode || setCode.length !== 3) continue;
-
+        
         const id = row[idxID].split('.')[0].padStart(3, '0');
         const name = row[idxName];
         const cost = parseInt(row[idxCost]) || 0;
@@ -414,11 +657,18 @@ function parseCSV(text) {
         const rarityRaw = row[idxRarity] ? row[idxRarity].charAt(0) : 'C';
         
         let simpleType = "Unit";
+        // Improved type detection for LOF bases
         if(typeRaw.toLowerCase().includes("leader")) simpleType = "Leader";
         else if(typeRaw.toLowerCase().includes("base")) simpleType = "Base";
+        else if(typeRaw.toLowerCase().includes("event")) simpleType = "Event";
+        else if(typeRaw.toLowerCase().includes("upgrade")) simpleType = "Upgrade";
         
-        // Skip tokens
-        if(id === "000" || name === "Token") continue;
+        // Force LOF Bases logic if type is missing
+        if(setCode === 'LOF' && !typeRaw.toLowerCase().includes('base') && !typeRaw.toLowerCase().includes('unit') && !typeRaw.toLowerCase().includes('event')) {
+             const idNum = parseInt(id);
+             // LOF bases seem to be around ID 19-30 based on data
+             if(idNum >= 19 && idNum <= 30) simpleType = "Base";
+        }
 
         // Determine Rarity
         let rarity = "Common";
@@ -429,12 +679,11 @@ function parseCSV(text) {
 
         // Determine Aspect
         let asp = row[idxAspect1] || "Neutral";
-        if(aspectCheck(asp) === "Neutral" && row[idxAspect2] && aspectCheck(row[idxAspect2]) !== "Neutral") {
+        if(aspectCheck(asp) === "Neutral" && idxAspect2 !== -1 && row[idxAspect2] && aspectCheck(row[idxAspect2]) !== "Neutral") {
             asp = row[idxAspect2];
         }
         asp = aspectCheck(asp);
 
-        // Image
         const img = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}.png`;
         const card = { id, set: setCode, name, cost, type: simpleType, rarity, aspect: asp, img, arena: row[idxArena] || "" };
 
@@ -486,7 +735,7 @@ function openPacks() {
     const num = parseInt(document.getElementById('packCount').value) || 6;
     const data = getSetData(set);
     
-    if(data.deck.length === 0) { alert("Set data missing!"); return; }
+    if(!data.deck.length && !data.leaders.length) { alert("Set data missing/empty for " + set); return; }
 
     currentView = [];
     myDeck = {};
@@ -495,19 +744,19 @@ function openPacks() {
     for(let i=0; i<num; i++) {
         // 1 Leader
         if(data.leaders.length) currentView.push({...data.leaders[Math.floor(Math.random()*data.leaders.length)], uid: Math.random(), col: 'Leader'});
-        // 1 Base (Guaranteed now for all sets including LOF)
+        
+        // 1 Base (Guaranteed logic)
         if(data.bases.length) {
              currentView.push({...data.bases[Math.floor(Math.random()*data.bases.length)], uid: Math.random(), col: 'Base'});
-        } else {
-             // Fallback if no bases parsed for set (shouldn't happen with correct DB)
-             console.warn("No bases found for set " + set);
-        }
+        } 
         
         // 14 Deck cards
         for(let k=0; k<14; k++) {
-            const c = data.deck[Math.floor(Math.random()*data.deck.length)];
-            let col = getSortColumn(c);
-            currentView.push({...c, uid: Math.random(), col: col});
+            if(data.deck.length) {
+                const c = data.deck[Math.floor(Math.random()*data.deck.length)];
+                let col = getSortColumn(c);
+                currentView.push({...c, uid: Math.random(), col: col});
+            }
         }
     }
     renderBoard();
@@ -516,14 +765,17 @@ function openPacks() {
 function startDraft() {
     draftState = { active: true, round: 1, packSize: 14, set: document.getElementById('setSelect').value, hand: [], phase: 'LEADER' };
     const d = getSetData(draftState.set);
-    if(!d.deck.length) return;
+    if(!d.deck.length) { alert("No data for draft"); return; }
 
     currentView = []; myDeck = {}; updateSidebar(); renderBoard();
     
     // Add Common Bases to Pool automatically for Draft
-    d.bases.filter(b => b.rarity === 'Common').forEach(b => {
-        currentView.push({...b, uid: Math.random(), col: 'Base'});
-    });
+    if(d.bases.length > 0) {
+        const commons = d.bases.filter(b => b.rarity === 'Common');
+        (commons.length ? commons : d.bases).forEach(b => {
+            currentView.push({...b, uid: Math.random(), col: 'Base'});
+        });
+    }
     
     document.getElementById('draft-zone').style.display = 'flex';
     nextDraftStep();
@@ -540,10 +792,18 @@ function nextDraftStep() {
             nextDraftStep(); return;
         }
         info.innerText = `DRAFT LEADERS (${4-draftState.round} LEFT)`;
-        for(let i=0; i<(4-draftState.round); i++) draftState.hand.push(d.leaders[Math.floor(Math.random()*d.leaders.length)]);
+        for(let i=0; i<(4-draftState.round); i++) {
+            if(d.leaders.length) draftState.hand.push(d.leaders[Math.floor(Math.random()*d.leaders.length)]);
+        }
     } else {
-        info.innerText = `PACK PICK (${draftState.packSize} LEFT)`;
-        for(let i=0; i<draftState.packSize; i++) draftState.hand.push(d.deck[Math.floor(Math.random()*d.deck.length)]);
+        let packNum = 1;
+        if(draftState.phase==='PACK2') packNum=2;
+        if(draftState.phase==='PACK3') packNum=3;
+        
+        info.innerText = `PACK ${packNum} - PICK (${draftState.packSize} LEFT)`;
+        for(let i=0; i<draftState.packSize; i++) {
+            if(d.deck.length) draftState.hand.push(d.deck[Math.floor(Math.random()*d.deck.length)]);
+        }
     }
     renderHand();
 }
@@ -594,6 +854,11 @@ function toggleSort() {
     initBoard(); renderBoard();
 }
 
+function toggleLeaderSide() {
+    viewLeaderBack = !viewLeaderBack;
+    renderBoard();
+}
+
 function initBoard() {
     const b = document.getElementById('board'); b.innerHTML = '';
     const cols = currentSortMode === 'cost' 
@@ -610,10 +875,18 @@ function initBoard() {
         let colorClass = `ch-${id}`;
         if(!isNaN(parseInt(id))) colorClass = 'ch-cost';
 
+        let flipBtn = '';
+        if(id === 'Leader') {
+            flipBtn = `<button class="btn-flip" onclick="toggleLeaderSide()">FLIP</button>`;
+        }
+
         d.innerHTML = `
             <div class="col-header ${colorClass}">
-                <span>${label}</span>
-                <button class="col-toggle" onclick="toggleCol('${id}')">-</button>
+                <span style="display:flex;align-items:center;">${label}</span>
+                <div style="display:flex;align-items:center;">
+                    ${flipBtn}
+                    <button class="col-toggle" onclick="toggleCol('${id}')">-</button>
+                </div>
             </div>
             <div class="col-content" id="list-${id}"></div>
         `;
@@ -636,8 +909,7 @@ function renderBoard() {
     // Clear lists
     document.querySelectorAll('.col-content').forEach(e => e.innerHTML='');
     
-    // Group duplicates logic could go here, but for pool we list individually usually.
-    // Let's stack duplicates in pool for cleaner UI
+    // Group duplicates logic logic
     let displayMap = {};
     
     currentView.forEach(c => {
@@ -651,15 +923,21 @@ function renderBoard() {
         if(!list) return;
         
         const el = document.createElement('div');
-        el.className = 'card-item' + (c.rarity==='Legendary'||c.rarity==='Rare'?' shiny':'');
-        el.innerHTML = `<img src="${c.img}">
+        el.className = 'card-item' + (c.rarity==='Legendary'||c.rarity==='Rare'||c.rarity==='Special'?' shiny':'');
+        
+        let imgSrc = c.img;
+        if(c.type === 'Leader' && viewLeaderBack) {
+            // Convention: Leader back image
+            imgSrc = c.img.replace('.png', '-back.png'); 
+        }
+
+        el.innerHTML = `<img src="${imgSrc}">
                         <div class="card-actions">
                             <div class="add-icon" onclick="moveToDeck('${c.id}')">+</div>
                         </div>`;
         if(c.count > 1) {
-            // Add a badge
             const badge = document.createElement('div');
-            badge.style.cssText = "position:absolute;top:-5px;right:-5px;background:#fa0;color:#000;border-radius:50%;width:24px;height:24px;display:flex;justify-content:center;align-items:center;font-weight:bold;z-index:200;box-shadow:0 2px 5px #000;";
+            badge.style.cssText = "position:absolute;top:-8px;right:-8px;background:#fa0;color:#000;border-radius:50%;width:24px;height:24px;display:flex;justify-content:center;align-items:center;font-weight:900;z-index:200;box-shadow:0 2px 5px #000;border:2px solid #fff;";
             badge.innerText = c.count;
             el.appendChild(badge);
         }
@@ -667,7 +945,7 @@ function renderBoard() {
         // Drag events
         el.draggable = true;
         el.ondragstart = e => e.dataTransfer.setData('text/plain', JSON.stringify({id: c.id, from: 'board'}));
-        el.onmouseenter = e => showPreview(c.img); 
+        el.onmouseenter = e => showPreview(imgSrc); 
         el.onmouseleave = hidePreview;
         el.onmousemove = movePreview;
 
@@ -677,7 +955,6 @@ function renderBoard() {
 
 /* --- DECK MANAGEMENT --- */
 function moveToDeck(id) {
-    // Find one instance in view
     const idx = currentView.findIndex(x => x.id === id);
     if(idx === -1) return;
     const card = currentView[idx];
@@ -695,7 +972,6 @@ function removeFromDeck(id) {
     myDeck[id].count--;
     const card = myDeck[id];
     
-    // Return to board
     let col = getSortColumn(card);
     currentView.push({ ...card, uid: Math.random(), col: col });
     
@@ -714,22 +990,20 @@ function updateSidebar() {
 
     Object.values(myDeck).sort((a,b) => a.name.localeCompare(b.name)).forEach(c => {
         total += c.count;
-        if(c.arena === 'Ground') ground += c.count;
-        if(c.arena === 'Space') space += c.count;
+        if(c.arena && c.arena.includes('Ground')) ground += c.count;
+        if(c.arena && c.arena.includes('Space')) space += c.count;
         
-        // Curve Logic
-        if(c.type === 'Unit' || c.type === 'Event' || c.type === 'Upgrade') {
+        if(c.type !== 'Leader' && c.type !== 'Base') {
             let cost = c.cost > 8 ? 8 : (c.cost < 1 ? 1 : c.cost);
             curve[cost] += c.count;
             if(curve[cost] > max) max = curve[cost];
         }
 
         const li = document.createElement('li');
-        li.innerHTML = `<span>${c.name}</span> <span style="color:#fff; font-weight:bold;">x${c.count}</span>`;
+        li.innerHTML = `<span>${c.name}</span> <span style="color:var(--accent); font-weight:bold;">x${c.count}</span>`;
         li.style.borderLeftColor = `var(--c-${c.aspect})`;
         li.onclick = () => removeFromDeck(c.id);
         
-        // Drag from deck
         li.draggable = true;
         li.ondragstart = e => e.dataTransfer.setData('text/plain', JSON.stringify({id: c.id, from: 'deck'}));
         li.onmouseenter = e => showPreview(c.img);
@@ -743,20 +1017,18 @@ function updateSidebar() {
     document.getElementById('stat-ground').innerText = ground;
     document.getElementById('stat-space').innerText = space;
 
-    // Render Mana Curve
     const mc = document.getElementById('mana-curve'); mc.innerHTML = '';
     for(let i=1; i<=8; i++) {
         const val = curve[i];
         const h = max > 0 ? (val / max * 100) : 0;
         const col = document.createElement('div'); col.className = 'mc-col';
         
-        // Dynamic Color based on height/intensity
         let barColor = `linear-gradient(to top, #444, #666)`;
-        if(h > 60) barColor = `linear-gradient(to top, var(--accent-glow), var(--accent))`;
+        if(h > 60) barColor = `linear-gradient(to top, #bd1e2d, var(--accent))`;
         else if(h > 20) barColor = `linear-gradient(to top, #006eb6, #55aaff)`;
 
         col.innerHTML = `
-            <div class="mc-val">${val || ''}</div>
+            <div class="mc-val" style="${val>0?'':'opacity:0'}">${val}</div>
             <div class="mc-bar" style="height:${h}%; background:${barColor}"></div>
             <div class="mc-label">${i}${i===8?'+':''}</div>
         `;
@@ -772,15 +1044,31 @@ function showBasePicker() {
     const content = document.getElementById('base-picker-content');
     content.innerHTML = '';
 
-    // Filter common bases from current set
     const commons = d.bases.filter(b => b.rarity === 'Common');
     
-    if(commons.length === 0) {
-        alert("No common bases found in " + set);
+    let pool = commons.length ? commons : [];
+    if(pool.length === 0) {
+        Object.values(LOCAL_DATABASE).forEach(s => {
+            pool.push(...s.bases.filter(b => b.rarity === 'Common'));
+        });
+    }
+
+    if(pool.length === 0) {
+        content.innerHTML = "<p style='color:white'>No bases found in database.</p>";
+        modal.style.display = 'flex';
         return;
     }
 
-    commons.forEach(b => {
+    const uniqueBases = [];
+    const map = new Map();
+    for (const item of pool) {
+        if(!map.has(item.name)){
+            map.set(item.name, true);
+            uniqueBases.push(item);
+        }
+    }
+
+    uniqueBases.forEach(b => {
         const el = document.createElement('div');
         el.className = 'picker-card';
         el.innerHTML = `<img src="${b.img}">`;
@@ -799,7 +1087,6 @@ function showBasePicker() {
 /* --- UTILS --- */
 function resetDatabase() { localStorage.removeItem('SWU_DB_V2'); location.reload(); }
 function clearDeck() { 
-    // Move all back to board if not drafting
     if(!draftState.active) {
         Object.values(myDeck).forEach(c => {
             for(let i=0; i<c.count; i++) currentView.push({...c, uid:Math.random(), col:getSortColumn(c)});
@@ -819,9 +1106,15 @@ function loadDeck() {
     if(s) { myDeck = JSON.parse(s); updateSidebar(); }
 }
 function copyJSON() {
-    const ids = [];
-    Object.values(myDeck).forEach(c => { for(let i=0; i<c.count; i++) ids.push(c.id); });
-    navigator.clipboard.writeText(JSON.stringify(myDeck, null, 2));
+    const d={metadata:{name:"Draft Deck",author:"HoloDrafter"},leader:null,base:null,deck:[],sideboard:[]};
+    Object.values(myDeck).forEach(c=>{ 
+        const pid = `${c.set.toUpperCase()}_${c.id}`;
+        const entry = {id: pid, count: c.count}; 
+        if(c.type==='Leader') { d.leader = entry; } 
+        else if(c.type==='Base') { d.base = entry; } 
+        else d.deck.push(entry); 
+    });
+    navigator.clipboard.writeText(JSON.stringify(d,null,2));
     alert("JSON Copied to Clipboard");
 }
 
@@ -829,11 +1122,8 @@ function copyJSON() {
 function dropToBoard(e, colId) {
     const d = JSON.parse(e.dataTransfer.getData('text/plain'));
     if(d.from === 'deck') {
-        removeFromDeck(d.id); // This puts it back in view, we need to find it and move it to specific col
-        // This is a bit tricky with current logic because remove puts it in default col.
-        // We will just let it reset to default col for simplicity in this version.
+        removeFromDeck(d.id);
     } else {
-        // Reordering within board not implemented deeply, just visual shift
         const item = currentView.find(x => x.id === d.id);
         if(item) { item.col = colId; renderBoard(); }
     }
@@ -850,12 +1140,12 @@ function movePreview(e) {
     const x = e.clientX, y = e.clientY;
     const w = window.innerWidth, h = window.innerHeight;
     
-    let left = x + 20;
-    let top = y - 100;
+    let left = x + 25;
+    let top = y - 150;
 
-    if(left + 320 > w) left = x - 340;
-    if(top + 450 > h) top = h - 460;
-    if(top < 0) top = 10;
+    if(left + 360 > w) left = x - 370;
+    if(top + 480 > h) top = h - 500;
+    if(top < 20) top = 20;
 
     tip.style.left = left + 'px';
     tip.style.top = top + 'px';
