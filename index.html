@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: Sealed Builder (No Stack Leaders)</title>
+    <title>SWU: Sealed Builder (Final Layout)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -18,8 +18,8 @@
             --c-Aggression: #bd1e2d; --c-Command: #377d22; --c-Cunning: #f2c035;    
             --c-Vigilance: #006eb6; --c-Villainy: #222222; --c-Heroism: #eeeeee; --c-Neutral: #777777;
 
-            --c-Common: #aaaaaa; --c-Uncommon: #55aaff; --c-Rare: #ffcc00;
-            --c-Legendary: #aa55ff; --c-Special: #ff4444;
+            --c-Common: #cd7f32; --c-Uncommon: #e0e0e0; --c-Rare: #ffd700;
+            --c-Legendary: #00bfff; --c-Special: #000;
             --c-Foil: #0ff;
 
             --c-leader: #fff; --c-base: #aaa; --c-unit: #444; --c-pool: #402020; 
@@ -53,38 +53,19 @@
             display: flex; justify-content: space-between; align-items: center; width: 100%;
         }
 
-        /* LEFT GROUP (TITLE) */
-        .left-group {
-            display: flex; flex-direction: column; justify-content: center; align-items: flex-start; flex: 1;
-        }
+        .left-group { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; flex: 1; }
+        .center-group { display: flex; gap: 20px; align-items: center; justify-content: center; flex: 2; }
+        .right-group { display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex: 1; }
 
-        /* CENTER GROUP (CONTROLS) */
-        .center-group {
-            display: flex; gap: 20px; align-items: center; justify-content: center; flex: 2;
-        }
-
-        /* RIGHT GROUP (SOUNDS) */
-        .right-group {
-            display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex: 1;
-        }
-
-        /* TITLE STYLE */
         h1 { 
-            margin: 0; 
-            font-family: 'Orbitron', sans-serif; 
-            color: var(--accent); 
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px var(--accent-glow); 
-            text-transform: uppercase; 
-            white-space: nowrap; 
-            padding-bottom: 2px;
+            margin: 0; font-family: 'Orbitron', sans-serif; color: var(--accent); 
+            font-size: 22px; font-weight: 900; letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent-glow); text-transform: uppercase; 
+            white-space: nowrap; padding-bottom: 2px;
         }
         .sub-stat { font-size: 10px; color: #aaa; font-family: 'Orbitron'; letter-spacing: 1px; margin-top: 6px; }
         .sub-stat span { color: #fff; font-weight: bold; }
 
-        /* STYLIZED INPUTS */
         select, input[type="number"] { 
             background: rgba(10, 10, 15, 0.9); color: #fff; 
             border: 1px solid #444; padding: 0 10px; 
@@ -94,7 +75,6 @@
         select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         input[type="number"] { width: 55px; text-align: center; font-weight: bold; color: var(--accent); }
         
-        /* STYLIZED BUTTONS */
         button.btn, a.btn { 
             background: rgba(255,255,255,0.05); 
             color: #ddd; border: 1px solid #555; 
@@ -110,17 +90,13 @@
             box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-1px); 
         }
         button.btn:active { transform: translateY(1px); }
-        
         button.btn-action { border-color: var(--accent); color: var(--accent); background: rgba(255, 232, 31, 0.05); }
         
-        /* SOUND BUTTONS */
         .sound-btn { width: 40px; padding: 0; font-size: 18px; }
         button.btn-pew { border-color: #ff3333; color: #ff3333; background: rgba(255, 51, 51, 0.05); }
         button.btn-pew:hover { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 20px #ff3333; border-color: #ff3333; color: white; }
-
         button.btn-chewie { border-color: #8B4513; color: #8B4513; background: rgba(139, 69, 19, 0.1); }
         button.btn-chewie:hover { background: rgba(139, 69, 19, 0.3); box-shadow: 0 0 20px #8B4513; border-color: #A0522D; color: #fff; }
-
         button.btn-r2 { border-color: #00e5ff; color: #00e5ff; background: rgba(0, 229, 255, 0.05); }
         button.btn-r2:hover { background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 20px #00e5ff; border-color: #fff; color: #fff; }
         
@@ -129,7 +105,6 @@
         .btn-karabast { background: #112; border-color: #338; color: #aaf; width: 48%; }
         .btn-karabast:hover { background: #224; border-color: #55f; color: #fff; box-shadow: 0 0 15px #55f; }
         
-        /* SEGMENT CONTROL */
         .segment-control { display: flex; background: #000; border: 1px solid #444; border-radius: 0; overflow: hidden; height: 36px; }
         .segment-btn { padding: 0 14px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px; color: #777; transition: 0.2s; border:none; background: transparent; border-right: 1px solid #333; height: 100%; }
         .segment-btn:last-child { border-right: none; }
@@ -145,7 +120,6 @@
             align-items: flex-start;
         }
         
-        /* --- COLUMNS --- */
         .column { 
             background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; 
             display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; 
@@ -153,21 +127,12 @@
             overflow: hidden; position: relative; backdrop-filter: blur(5px);
         }
         .column.drag-over { background: rgba(40, 40, 40, 0.9); box-shadow: 0 0 25px var(--accent-glow); border-color: var(--accent); }
-        
-        /* Leader/Base Column Settings */
-        .col-special { 
-            width: 220px; min-width: 220px; 
-            border: 1px solid #444; 
-            display: flex; align-items: center;
-        }
+        .col-special { width: 220px; min-width: 220px; border: 1px solid #444; display: flex; align-items: center; }
         .col-pool { width: 190px; min-width: 190px; border: 1px solid #444; background: var(--panel-bg); }
 
         .column.collapsed { min-width: 40px; width: 40px; background: #050505; border-color: #333; }
         .column.collapsed .col-content { display: none; }
-        .column.collapsed .col-header { 
-            height: 100%; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); 
-            display: flex; align-items: center; justify-content: center; padding: 0;
-        }
+        .column.collapsed .col-header { height: 100%; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); display: flex; align-items: center; justify-content: center; padding: 0; }
         .column.collapsed .header-title { margin-bottom: 10px; font-size: 14px; letter-spacing: 2px; }
         .column.collapsed .col-toggle { transform: rotate(90deg); margin-bottom: 10px; }
 
@@ -203,37 +168,31 @@
         .ch-Villainy { border-bottom-color: var(--c-Villainy); color: #999; }
         .ch-Heroism { border-bottom-color: var(--c-Heroism); color: #fff; }
         .ch-Neutral { border-bottom-color: var(--c-Neutral); color: #bbb; }
+        
         .ch-Common { border-bottom-color: var(--c-Common); color: var(--c-Common); }
         .ch-Uncommon { border-bottom-color: var(--c-Uncommon); color: var(--c-Uncommon); }
         .ch-Rare { border-bottom-color: var(--c-Rare); color: var(--c-Rare); }
         .ch-Legendary { border-bottom-color: var(--c-Legendary); color: var(--c-Legendary); }
-        .ch-Special { border-bottom-color: var(--c-Special); color: var(--c-Special); }
+        .ch-Special { border-bottom-color: #fff; color: #000; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; }
         .ch-cost { border-bottom-color: #666; color: #fff; font-size: 24px; }
 
         .col-content { 
             width: 100%; flex: 1; overflow-y: auto; overflow-x: visible; 
-            padding: 15px 8px 250px 8px; 
+            /* RESTORED PADDING TO 10px to keep cards at top */
+            padding: 10px 8px 250px 8px; 
             display: flex; flex-direction: column; align-items: center; 
             scrollbar-width: thin; scrollbar-color: #444 #111; 
             position: relative; z-index: 10; box-sizing: border-box;
         }
 
-        /* STACKING EFFECT - MODIFIED TO EXCLUDE LEADERS & BASES */
-        /* Apply negative margin ONLY if it is NOT Leader, NOT Base, and NOT explicitly unstacked */
+        /* STACKING EFFECT - RESTORED TO -160px */
         .col-content:not(#list-Leader):not(#list-Base):not(.unstacked) .card-item:not(:first-child) { 
             margin-top: -160px; 
             transition: margin 0.3s ease-in-out; 
         }
         
-        /* Add some spacing for non-stacked items in Leader/Base columns */
-        #list-Leader .card-item, #list-Base .card-item {
-            margin-bottom: 10px;
-        }
-
-        /* Unstacked state: Spread out vertically */
-        .col-content.unstacked .card-item {
-            margin-top: 10px !important;
-        }
+        #list-Leader .card-item, #list-Base .card-item { margin-bottom: 10px; }
+        .col-content.unstacked .card-item { margin-top: 10px !important; }
 
         #list-Cards { display: grid; grid-template-columns: 1fr; gap: 8px; align-content: start; align-items: center; }
 
@@ -265,16 +224,30 @@
         .picker-card img { width: 100%; border-radius: 8px; display: block; box-shadow: 0 5px 15px #000; }
         .picker-card:hover img { outline: 3px solid var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
 
-        .card-item { position: relative; background: #000; border-radius: 9px; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,0.8); transition: transform 0.1s ease-out, margin 0.3s ease; display: flex; flex-direction: column; width: 100%; z-index: 1; will-change: transform; border: 1px solid #333; overflow: visible; }
+        /* CARD ENTRY ANIMATION - SMOOTH SLIDE IN */
+        @keyframes cardEntry {
+            0% { opacity: 0; transform: translateY(-30px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .card-item { 
+            position: relative; background: #000; border-radius: 9px; cursor: grab; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8); 
+            transition: transform 0.1s ease-out, margin 0.3s ease; 
+            display: flex; flex-direction: column; width: 100%; z-index: 1; 
+            will-change: transform; border: 1px solid #333; 
+            overflow: visible;
+            animation: cardEntry 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; /* Smoother animation */
+        }
         
-        /* FOIL ANIMATED OVERLAY */
+        /* FOIL EFFECT */
         .card-item.foil::after {
             content: "";
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 9px;
-            background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 70%);
+            background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(0, 255, 255, 0.2) 50%, rgba(255, 0, 255, 0.2) 70%, rgba(255,255,255,0) 100%);
             background-size: 200% 200%;
-            opacity: 0.6;
+            opacity: 0.7;
             pointer-events: none;
             z-index: 2;
             animation: foil-shine 3s infinite linear;
