@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: Sealed Simulator (Foil & Fixes)</title>
+    <title>SWU: Sealed Builder (Type Sort)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -21,18 +21,19 @@
             --c-Common: #aaaaaa; --c-Uncommon: #55aaff; --c-Rare: #ffcc00;
             --c-Legendary: #aa55ff; --c-Special: #ff4444;
             --c-Foil: #0ff;
+            
+            /* TYPE COLORS */
+            --c-Ground: #a0522d; --c-Space: #4682b4; --c-Event: #ffd700; --c-Upgrade: #c0c0c0;
 
             --c-leader: #fff; --c-base: #aaa; --c-unit: #444; --c-pool: #402020; 
         }
 
         body { 
-            /* THEME IMAGE */
             background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.85)), 
                         url('https://www.stompinggroundstcg.com/cdn/shop/collections/Star_Wars_Unlimited_Collection_Banner_600x.webp?v=1722208792');
             background-size: cover;
             background-position: center top;
             background-attachment: fixed;
-            
             color: var(--text-main); 
             font-family: 'Rajdhani', sans-serif; 
             margin: 0; padding: 0; height: 100vh; 
@@ -42,11 +43,11 @@
         /* --- HEADER --- */
         header { 
             padding: 0 30px; 
-            background: rgba(0,0,0,0.8); 
+            background: rgba(0,0,0,0.85); 
             border-bottom: 1px solid rgba(255,255,255,0.1); 
             backdrop-filter: blur(10px);
             display: flex; align-items: center; 
-            height: 90px; z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+            height: 90px; z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.9); 
             position: relative;
         }
         
@@ -54,74 +55,49 @@
             display: flex; justify-content: space-between; align-items: center; width: 100%;
         }
 
-        /* LEFT GROUP (TITLE) */
-        .left-group {
-            display: flex; flex-direction: column; justify-content: center; align-items: flex-start; flex: 1;
-        }
+        .left-group { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; flex: 1; }
+        .center-group { display: flex; gap: 20px; align-items: center; justify-content: center; flex: 2; }
+        .right-group { display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex: 1; }
 
-        /* CENTER GROUP (CONTROLS) */
-        .center-group {
-            display: flex; gap: 15px; align-items: center; justify-content: center; flex: 2;
-            background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* RIGHT GROUP (SOUNDS) */
-        .right-group {
-            display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex: 1;
-        }
-
-        /* TITLE STYLE */
         h1 { 
-            margin: 0; 
-            font-family: 'Orbitron', sans-serif; 
-            color: var(--accent); 
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px var(--accent-glow); 
-            text-transform: uppercase; 
-            white-space: nowrap; 
-            padding-bottom: 2px;
+            margin: 0; font-family: 'Orbitron', sans-serif; color: var(--accent); 
+            font-size: 22px; font-weight: 900; letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent-glow); text-transform: uppercase; 
+            white-space: nowrap; padding-bottom: 2px;
         }
         .sub-stat { font-size: 10px; color: #aaa; font-family: 'Orbitron'; letter-spacing: 1px; margin-top: 6px; }
         .sub-stat span { color: #fff; font-weight: bold; }
 
-        /* STYLIZED INPUTS */
         select, input[type="number"] { 
-            background: rgba(20, 20, 30, 0.8); color: #fff; 
+            background: rgba(10, 10, 15, 0.9); color: #fff; 
             border: 1px solid #444; padding: 0 10px; 
-            font-family: 'Orbitron'; font-size: 13px; border-radius: 4px; 
+            font-family: 'Orbitron'; font-size: 13px; border-radius: 0; 
             outline: none; transition: 0.3s; height: 36px;
         }
         select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         input[type="number"] { width: 55px; text-align: center; font-weight: bold; color: var(--accent); }
         
-        /* STYLIZED BUTTONS */
         button.btn, a.btn { 
             background: rgba(255,255,255,0.05); 
             color: #ddd; border: 1px solid #555; 
             padding: 0 18px; height: 36px; 
             font-family: 'Orbitron'; cursor: pointer; transition: all 0.2s ease-in-out; 
-            border-radius: 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; text-decoration: none;
+            border-radius: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
         button.btn:hover, a.btn:hover { 
             border-color: var(--accent); color: #fff; 
             background: rgba(255, 232, 31, 0.1); 
-            box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); 
+            box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-1px); 
         }
         button.btn:active { transform: translateY(1px); }
-        
         button.btn-action { border-color: var(--accent); color: var(--accent); background: rgba(255, 232, 31, 0.05); }
         
-        /* SOUND BUTTONS */
         .sound-btn { width: 40px; padding: 0; font-size: 18px; }
         button.btn-pew { border-color: #ff3333; color: #ff3333; background: rgba(255, 51, 51, 0.05); }
         button.btn-pew:hover { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 20px #ff3333; border-color: #ff3333; color: white; }
-
         button.btn-chewie { border-color: #8B4513; color: #8B4513; background: rgba(139, 69, 19, 0.1); }
         button.btn-chewie:hover { background: rgba(139, 69, 19, 0.3); box-shadow: 0 0 20px #8B4513; border-color: #A0522D; color: #fff; }
-
         button.btn-r2 { border-color: #00e5ff; color: #00e5ff; background: rgba(0, 229, 255, 0.05); }
         button.btn-r2:hover { background: rgba(0, 229, 255, 0.2); box-shadow: 0 0 20px #00e5ff; border-color: #fff; color: #fff; }
         
@@ -130,23 +106,18 @@
         .btn-karabast { background: #112; border-color: #338; color: #aaf; width: 48%; }
         .btn-karabast:hover { background: #224; border-color: #55f; color: #fff; box-shadow: 0 0 15px #55f; }
         
-        /* SEGMENT CONTROL */
-        .segment-control { display: flex; background: #000; border: 1px solid #444; border-radius: 4px; overflow: hidden; height: 36px; margin-left: 10px; }
+        .segment-control { display: flex; background: #000; border: 1px solid #444; border-radius: 0; overflow: hidden; height: 36px; }
         .segment-btn { padding: 0 14px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px; color: #777; transition: 0.2s; border:none; background: transparent; border-right: 1px solid #333; height: 100%; }
         .segment-btn:last-child { border-right: none; }
         .segment-btn:hover { color: #fff; background: #151515; }
-        .segment-btn.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .segment-btn.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
 
         #db-status { font-size: 10px; color: #777; font-family: monospace; border: 1px solid #333; padding: 2px 6px; border-radius: 4px; background: #111; }
 
         /* --- MAIN AREA --- */
         #main-area { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
-        #board { 
-            flex: 1; display: flex; gap: 12px; padding: 20px; overflow-x: auto; 
-            align-items: flex-start;
-        }
+        #board { flex: 1; display: flex; gap: 12px; padding: 20px; overflow-x: auto; align-items: flex-start; }
         
-        /* --- COLUMNS --- */
         .column { 
             background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; 
             display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; 
@@ -154,46 +125,27 @@
             overflow: hidden; position: relative; backdrop-filter: blur(5px);
         }
         .column.drag-over { background: rgba(40, 40, 40, 0.9); box-shadow: 0 0 25px var(--accent-glow); border-color: var(--accent); }
-        
-        /* Leader/Base Column Fix for jumping */
-        .col-special { 
-            width: 220px; min-width: 220px; 
-            border: 1px solid #444; 
-            display: flex; align-items: center;
-        }
+        .col-special { width: 220px; min-width: 220px; border: 1px solid #444; display: flex; align-items: center; }
         .col-pool { width: 190px; min-width: 190px; border: 1px solid #444; background: var(--panel-bg); }
 
         .column.collapsed { min-width: 40px; width: 40px; background: #050505; border-color: #333; }
         .column.collapsed .col-content { display: none; }
-        .column.collapsed .col-header { 
-            height: 100%; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); 
-            display: flex; align-items: center; justify-content: center; padding: 0;
-        }
+        .column.collapsed .col-header { height: 100%; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); display: flex; align-items: center; justify-content: center; padding: 0; }
         .column.collapsed .header-title { margin-bottom: 10px; font-size: 14px; letter-spacing: 2px; }
         .column.collapsed .col-toggle { transform: rotate(90deg); margin-bottom: 10px; }
 
         .col-header { 
-            width: 100%;
-            padding: 10px; display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 10px; display: flex; justify-content: space-between; align-items: center;
             font-family: 'Orbitron'; font-weight: 900; font-size: 18px; 
             border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase; 
             background: rgba(0,0,0,0.4); z-index: 20; position: relative;
-            letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            box-sizing: border-box;
+            letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); box-sizing: border-box;
         }
         
-        .btn-mini {
-            font-size: 9px; padding: 2px 6px; border: 1px solid #555; background: #222; color: #aaa;
-            border-radius: 3px; margin-left: auto; margin-right: 5px; cursor: pointer; font-family: 'Orbitron'; z-index: 100;
-        }
+        .btn-mini { font-size: 9px; padding: 2px 6px; border: 1px solid #555; background: #222; color: #aaa; border-radius: 0; margin-left: auto; margin-right: 5px; cursor: pointer; font-family: 'Orbitron'; z-index: 100; }
         .btn-mini:hover { background: var(--accent); color: #000; border-color: var(--accent); }
 
-        .col-toggle {
-            background: transparent; border: 1px solid #555; color: #777;
-            width: 24px; height: 24px; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-family: monospace; font-size: 16px; line-height: 1; transition: 0.2s;
-        }
+        .col-toggle { background: transparent; border: 1px solid #555; color: #777; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 16px; line-height: 1; transition: 0.2s; }
         .col-toggle:hover { border-color: var(--accent); color: var(--accent); background: #222; }
         
         .ch-Leader { border-bottom-color: var(--c-leader); color: var(--c-leader); }
@@ -213,141 +165,64 @@
         .ch-Special { border-bottom-color: var(--c-Special); color: var(--c-Special); }
         .ch-cost { border-bottom-color: #666; color: #fff; font-size: 24px; }
 
-        .col-content { 
-            width: 100%;
-            flex: 1; overflow-y: auto; overflow-x: visible; 
-            padding: 15px 8px 250px 8px; 
-            display: flex; flex-direction: column; align-items: center; 
-            scrollbar-width: thin; scrollbar-color: #444 #111; 
-            position: relative; z-index: 10;
-            box-sizing: border-box;
-        }
+        /* NEW TYPE HEADER COLORS */
+        .ch-Ground { border-bottom-color: var(--c-Ground); color: #d88; }
+        .ch-Space { border-bottom-color: var(--c-Space); color: #88d; }
+        .ch-Event { border-bottom-color: var(--c-Event); color: #dd8; }
+        .ch-Upgrade { border-bottom-color: var(--c-Upgrade); color: #ddd; }
+
+        .col-content { width: 100%; flex: 1; overflow-y: auto; overflow-x: visible; padding: 15px 8px 250px 8px; display: flex; flex-direction: column; align-items: center; scrollbar-width: thin; scrollbar-color: #444 #111; position: relative; z-index: 10; box-sizing: border-box; }
         #list-Cards { display: grid; grid-template-columns: 1fr; gap: 8px; align-content: start; align-items: center; }
 
-        /* --- SIDEBAR & STATS --- */
-        #sidebar { 
-            width: 340px; background: rgba(10, 10, 12, 0.95); 
-            border-left: 1px solid #333; display: flex; flex-direction: column; 
-            z-index: 4000; transition: all 0.2s; position: relative; flex-shrink: 0; 
-            box-shadow: -10px 0 40px rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-        }
+        /* --- SIDEBAR --- */
+        #sidebar { width: 340px; background: rgba(10, 10, 12, 0.95); border-left: 1px solid #333; display: flex; flex-direction: column; z-index: 4000; transition: all 0.2s; position: relative; flex-shrink: 0; box-shadow: -10px 0 40px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
         .sb-header { padding: 15px; background: rgba(20,20,20,0.8); border-bottom: 1px solid #333; font-family: 'Orbitron'; color: var(--accent); font-size: 16px; letter-spacing: 2px; text-align: center; text-shadow: 0 0 10px rgba(255,232,31,0.3); }
         
-        /* GRAPHIC MANA CURVE (Histogram Style) */
         #stats-panel { padding: 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid #333; }
-        #mana-curve { 
-            display: flex; align-items: flex-end; height: 120px; gap: 6px; margin-bottom: 15px; 
-            border-bottom: 2px solid #555; border-left: 2px solid #555; 
-            padding: 0 10px 5px 10px; background: rgba(0,0,0,0.2);
-        }
-        .mc-bar-col { 
-            flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; height: 100%;
-        }
+        #mana-curve { display: flex; align-items: flex-end; height: 120px; gap: 6px; margin-bottom: 15px; border-bottom: 2px solid #555; border-left: 2px solid #555; padding: 0 10px 5px 10px; background: rgba(0,0,0,0.2); }
+        .mc-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; height: 100%; }
         .mc-val { font-size: 11px; color: #fff; margin-bottom: 4px; font-weight: bold; text-shadow: 0 1px 3px #000; }
-        .mc-bar { 
-            width: 100%; 
-            background: linear-gradient(to top, #a70 0%, var(--accent) 100%); 
-            min-height: 4px; border-radius: 4px 4px 0 0; 
-            transition: height 0.3s ease-out; opacity: 1;
-            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.5), 0 0 10px var(--accent-glow);
-            border: 1px solid #ffe81f77; border-bottom: none;
-        }
+        .mc-bar { width: 100%; background: linear-gradient(to top, #a70 0%, var(--accent) 100%); min-height: 4px; border-radius: 4px 4px 0 0; transition: height 0.3s ease-out; opacity: 1; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.5), 0 0 10px var(--accent-glow); border: 1px solid #ffe81f77; border-bottom: none; }
         .mc-bar:hover { filter: brightness(1.2); }
         .mc-label { font-size: 11px; color: #aaa; margin-top: 6px; font-family: 'Orbitron'; font-weight: bold; }
-        
         .arena-stats { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; font-family: 'Orbitron'; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
         .as-item span { color: var(--accent); font-weight: bold; font-size: 14px; }
 
         #deck-list { flex: 1; overflow-y: auto; padding: 15px; list-style: none; margin: 0; }
-        #deck-list li { 
-            background: rgba(255,255,255,0.03); padding: 8px 12px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; 
-            border-left: 4px solid #555; font-size: 13px; border-radius: 2px; cursor: pointer; transition: all 0.1s; 
-        }
+        #deck-list li { background: rgba(255,255,255,0.03); padding: 8px 12px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #555; font-size: 13px; border-radius: 2px; cursor: pointer; transition: all 0.1s; }
         #deck-list li:hover { background: rgba(255,232,31,0.1); color: #fff; transform: translateX(4px); border-left-color: var(--accent) !important; }
         
         .sb-footer { padding: 15px; border-top: 1px solid #333; background: rgba(0,0,0,0.8); }
         .save-load-container { display: flex; justify-content: space-between; margin-bottom: 10px; }
 
-        /* VISUAL PICKER MODAL */
-        #base-picker-modal {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.95); z-index: 8000;
-            justify-content: center; align-items: center; flex-direction: column;
-            backdrop-filter: blur(8px);
-        }
-        #base-picker-content {
-            background: #151515; border: 1px solid #444; padding: 30px; border-radius: 12px;
-            width: 80%; max-width: 1000px; max-height: 80vh; overflow-y: auto;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
+        #base-picker-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 8000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(8px); }
+        #base-picker-content { background: #151515; border: 1px solid #444; padding: 30px; border-radius: 12px; width: 80%; max-width: 1000px; max-height: 80vh; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         .picker-card { cursor: pointer; transition: 0.2s; position: relative; }
         .picker-card:hover { transform: scale(1.1); z-index: 10; }
         .picker-card img { width: 100%; border-radius: 8px; display: block; box-shadow: 0 5px 15px #000; }
         .picker-card:hover img { outline: 3px solid var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
 
-        /* --- CARD ITEM --- */
-        .card-item { 
-            position: relative; background: #000; border-radius: 9px; cursor: grab; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.8); 
-            transition: transform 0.1s ease-out, margin 0.3s ease; 
-            display: flex; flex-direction: column; width: 100%; z-index: 1; 
-            will-change: transform; border: 1px solid #333; 
-            overflow: visible;
-        }
-        
-        /* FOIL ANIMATED OVERLAY */
-        .card-item.foil::after {
-            content: "";
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 9px;
-            background: linear-gradient(
-                135deg, 
-                rgba(255,255,255,0) 30%, 
-                rgba(0, 255, 255, 0.25) 50%, 
-                rgba(255, 0, 255, 0.25) 70%, 
-                rgba(255,255,255,0) 100%
-            );
-            background-size: 200% 200%;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 2;
-            animation: foil-shine 4s infinite linear;
-            mix-blend-mode: screen;
-        }
-        @keyframes foil-shine {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        .col-content:not(#list-Cards):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -160px; }
-        .col-content:hover .card-item:not(:first-child) { margin-top: -115px; }
-
-        #list-Cards .card-item, #list-Leader .card-item, #list-Base .card-item { margin-top: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        
+        .card-item { position: relative; background: #000; border-radius: 9px; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,0.8); transition: transform 0.1s ease-out, margin 0.3s ease; display: flex; flex-direction: column; width: 100%; z-index: 1; will-change: transform; border: 1px solid #333; overflow: visible; }
+        .card-item.foil { border: none; box-shadow: 0 0 15px 2px var(--c-Foil); animation: foil-pulse 3s infinite alternate; }
+        @keyframes foil-pulse { 0% { box-shadow: 0 0 8px 1px var(--c-Foil); } 100% { box-shadow: 0 0 20px 5px var(--c-Foil); } }
         .card-item:hover { transform: scale(1.15); z-index: 1000 !important; box-shadow: 0 0 25px rgba(255, 232, 31, 0.4); border-color: var(--accent); }
         .card-item img { width: 100%; height: auto; display: block; border-radius: 9px; pointer-events: none; position: relative; z-index: 1; }
-        
         .card-actions { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; border-radius: 9px; backdrop-filter: blur(2px); z-index: 5; }
         .card-item:hover .card-actions { display: flex; }
         .add-icon { font-size: 30px; color: var(--accent); font-weight: 900; pointer-events: none; background: rgba(0,0,0,0.8); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         .stack-badge { position: absolute; top: -5px; right: -5px; background: var(--accent); color: #000; width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: 900; border: 2px solid #000; z-index: 10; box-shadow: 2px 2px 5px #000; }
 
-        /* --- MODALS & OVERLAYS --- */
         #loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center; }
         #upload-zone { border: 2px dashed #555; padding: 40px; border-radius: 10px; background: #222; margin-top: 20px; }
-        
         #preview-tooltip { position: fixed; display: none; z-index: 6000; pointer-events: none; background: rgba(0,0,0,0.8); border: 2px solid #555; border-radius: 8px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.9); overflow: hidden; }
         #preview-tooltip img { width: 340px; display: block; }
         #preview-tooltip.big-preview img { width: auto; height: 65vh; max-width: none; }
-        
         #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:7000; justify-content:center; align-items:center; flex-direction: column; }
         .modal-leader-wrapper { display: flex; gap: 30px; align-items: center; justify-content: center; flex-wrap: wrap; }
         .modal-leader-card { text-align: center; }
         .modal-leader-card h3 { font-family: 'Orbitron'; font-size: 16px; letter-spacing: 2px; margin-bottom: 10px; }
         .modal-leader-wrapper img { max-width: 40vw; max-height: 80vh; border-radius: 15px; box-shadow: 0 0 30px #000; border: 2px solid #333; transition: 0.3s; }
         #modal-img-single { max-width:90vw; max-height:80vh; border-radius: 12px; display: block; box-shadow: 0 0 50px #000; border: 2px solid #333; }
-        
         #toast { visibility: hidden; min-width: 200px; background-color: #222; color: var(--accent); text-align: center; border-radius: 4px; padding: 15px; position: fixed; z-index: 8000; left: 50%; bottom: 40px; transform: translateX(-50%); font-family: 'Orbitron'; border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(0,0,0,0.8); font-weight: bold; }
         #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 40px; opacity: 1;} }
@@ -392,6 +267,7 @@
                     <button class="segment-btn active" onclick="setSort('cost')">123</button>
                     <button class="segment-btn" onclick="setSort('aspect')">🎨</button>
                     <button class="segment-btn" onclick="setSort('rarity')">★</button>
+                    <button class="segment-btn" onclick="setSort('type')">TYPE</button>
                 </div>
             </div>
             
@@ -455,6 +331,7 @@
 const COST_COLS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const ASPECT_COLS = ["Aggression", "Command", "Cunning", "Vigilance", "Villainy", "Heroism", "Neutral"];
 const RARITY_COLS = ["Common", "Uncommon", "Rare", "Legendary", "Special"];
+const TYPE_COLS = ["Ground", "Space", "Event", "Upgrade"];
 
 // --- HARDCODED FALLBACK FOR LOF BASES ---
 const LOF_MISSING_BASES = [
@@ -561,7 +438,6 @@ function parseCSVandInstall(csvText) {
     }
 
     const setMap = {'TWL': 'TWI', 'SOR': 'SOR', 'SHD': 'SHD', 'JTL': 'JTL', 'LOF': 'LOF', 'SEC': 'SEC'};
-    const mainAspects = ["Aggression", "Command", "Cunning", "Vigilance"];
     const db = {};
     let count = 0;
 
@@ -596,6 +472,7 @@ function parseCSVandInstall(csvText) {
         const a1 = row[m['Aspect(s)']] || "";
         const a2 = row[m['Unnamed: 12']] || ""; 
         let asp = "Neutral"; 
+        const mainAspects = ["Aggression", "Command", "Cunning", "Vigilance"];
         const isMain = (a) => mainAspects.includes(a);
         const isAlign = (a) => a === "Villainy" || a === "Heroism";
         if (isMain(a1)) asp = a1; else if (isMain(a2)) asp = a2;
@@ -605,7 +482,7 @@ function parseCSVandInstall(csvText) {
         
         let simpleType = "Unit";
         
-        // --- PALPATINE & JABBA FIX ---
+        // PALPATINE & JABBA FIX
         if (name.includes('Emperor Palpatine') && setCode === 'SOR' && intId === 135) {
             simpleType = "Leader";
         } else if (name.includes('Jabba the Hutt') && setCode === 'SEC') {
@@ -675,6 +552,7 @@ function setSort(mode) {
     if (mode === 'cost') sortBtns[0].classList.add('active');
     if (mode === 'aspect') sortBtns[1].classList.add('active');
     if (mode === 'rarity') sortBtns[2].classList.add('active');
+    if (mode === 'type') sortBtns[3].classList.add('active');
     
     initBoard(); renderBoard();
 }
@@ -788,6 +666,15 @@ function openPacks() {
 function getSortColumn(c) {
     if (currentSortMode === 'cost') return getCostColumn(c.cost);
     if (currentSortMode === 'rarity') return c.rarity;
+    if (currentSortMode === 'aspect') return c.aspect;
+    
+    // TYPE SORT LOGIC
+    if (currentSortMode === 'type') {
+        if(c.type === 'Event') return 'Event';
+        if(c.type === 'Upgrade') return 'Upgrade';
+        if(c.arena === 'Space') return 'Space';
+        return 'Ground';
+    }
     return c.aspect; 
 }
 
@@ -810,6 +697,7 @@ function initBoard() {
     
     if(currentSortMode === 'cost') cols = ["Leader", "Base", "Cards", ...COST_COLS];
     else if(currentSortMode === 'rarity') cols = ["Leader", "Base", "Cards", ...RARITY_COLS];
+    else if(currentSortMode === 'type') cols = ["Leader", "Base", "Cards", ...TYPE_COLS];
     else cols = ["Leader", "Base", "Cards", ...ASPECT_COLS];
     
     cols.forEach(cn => {
@@ -825,6 +713,7 @@ function initBoard() {
         else if(cn==="Cards") hc="ch-Pool";
         else if(ASPECT_COLS.includes(cn)) hc=`ch-${cn}`;
         else if(RARITY_COLS.includes(cn)) hc=`ch-${cn}`;
+        else if(TYPE_COLS.includes(cn)) hc=`ch-${cn}`;
         else if(cn==="Neutral") hc="ch-Neutral";
         
         let extraBtn = '';
@@ -849,7 +738,7 @@ function initBoard() {
 }
 
 function renderBoard() {
-    const allCols = ["Leader", "Base", "Cards", ...COST_COLS, ...ASPECT_COLS, ...RARITY_COLS];
+    const allCols = ["Leader", "Base", "Cards", ...COST_COLS, ...ASPECT_COLS, ...RARITY_COLS, ...TYPE_COLS];
     allCols.forEach(cn => { const el=document.getElementById(`list-${cn}`); if(el) el.innerHTML=''; });
 
     if(currentView.length === 0) return;
