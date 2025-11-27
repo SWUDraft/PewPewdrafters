@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWU: Sealed Builder</title>
+    <title>SWU: Sealed Simulator (Foil & Fixes)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
@@ -26,6 +26,7 @@
         }
 
         body { 
+            /* THEME IMAGE */
             background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.85)), 
                         url('https://www.stompinggroundstcg.com/cdn/shop/collections/Star_Wars_Unlimited_Collection_Banner_600x.webp?v=1722208792');
             background-size: cover;
@@ -74,13 +75,12 @@
             margin: 0; 
             font-family: 'Orbitron', sans-serif; 
             color: var(--accent); 
-            font-size: 24px; /* Lidt større for at matche det nye navn */
+            font-size: 22px;
             font-weight: 900;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-shadow: 0 0 10px var(--accent-glow); 
             text-transform: uppercase; 
             white-space: nowrap; 
-            border-bottom: 2px solid var(--accent); 
             padding-bottom: 2px;
         }
         .sub-stat { font-size: 10px; color: #aaa; font-family: 'Orbitron'; letter-spacing: 1px; margin-top: 6px; }
@@ -148,15 +148,19 @@
         
         /* --- COLUMNS --- */
         .column { 
-            background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; 
+            background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; 
             display: flex; flex-direction: column; transition: all 0.3s ease; flex-shrink: 0; 
             height: 100%; min-width: 170px; width: 170px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
             overflow: hidden; position: relative; backdrop-filter: blur(5px);
         }
         .column.drag-over { background: rgba(40, 40, 40, 0.9); box-shadow: 0 0 25px var(--accent-glow); border-color: var(--accent); }
-        .col-special { width: 190px; min-width: 190px; border: 1px solid #444; }
         
-        /* UPDATED: CARDS COLUMN IS NOW BLACK LIKE THE REST */
+        /* Leader/Base Column Fix for jumping */
+        .col-special { 
+            width: 220px; min-width: 220px; 
+            border: 1px solid #444; 
+            display: flex; align-items: center;
+        }
         .col-pool { width: 190px; min-width: 190px; border: 1px solid #444; background: var(--panel-bg); }
 
         .column.collapsed { min-width: 40px; width: 40px; background: #050505; border-color: #333; }
@@ -169,14 +173,15 @@
         .column.collapsed .col-toggle { transform: rotate(90deg); margin-bottom: 10px; }
 
         .col-header { 
+            width: 100%;
             padding: 10px; display: flex; justify-content: space-between; align-items: center;
             font-family: 'Orbitron'; font-weight: 900; font-size: 18px; 
             border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase; 
             background: rgba(0,0,0,0.4); z-index: 20; position: relative;
             letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            box-sizing: border-box;
         }
         
-        /* MINI BUTTONS IN COLUMNS (Flip / Add) */
         .btn-mini {
             font-size: 9px; padding: 2px 6px; border: 1px solid #555; background: #222; color: #aaa;
             border-radius: 3px; margin-left: auto; margin-right: 5px; cursor: pointer; font-family: 'Orbitron'; z-index: 100;
@@ -193,8 +198,7 @@
         
         .ch-Leader { border-bottom-color: var(--c-leader); color: var(--c-leader); }
         .ch-Base { border-bottom-color: var(--c-base); color: var(--c-base); }
-        /* UPDATED: Cards header uses same style as Leader/Base */
-        .ch-Cards { border-bottom-color: #888; color: #ddd; }
+        .ch-Pool { border-bottom-color: #888; color: #ddd; }
         .ch-Aggression { border-bottom-color: var(--c-Aggression); color: var(--c-Aggression); }
         .ch-Command { border-bottom-color: var(--c-Command); color: var(--c-Command); }
         .ch-Cunning { border-bottom-color: var(--c-Cunning); color: var(--c-Cunning); }
@@ -210,11 +214,13 @@
         .ch-cost { border-bottom-color: #666; color: #fff; font-size: 24px; }
 
         .col-content { 
+            width: 100%;
             flex: 1; overflow-y: auto; overflow-x: visible; 
             padding: 15px 8px 250px 8px; 
             display: flex; flex-direction: column; align-items: center; 
             scrollbar-width: thin; scrollbar-color: #444 #111; 
             position: relative; z-index: 10;
+            box-sizing: border-box;
         }
         #list-Cards { display: grid; grid-template-columns: 1fr; gap: 8px; align-content: start; align-items: center; }
 
@@ -289,7 +295,30 @@
             will-change: transform; border: 1px solid #333; 
             overflow: visible;
         }
-        .card-item.foil { border-color: var(--c-Foil); box-shadow: 0 0 8px var(--c-Foil); }
+        
+        /* FOIL ANIMATED OVERLAY */
+        .card-item.foil::after {
+            content: "";
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 9px;
+            background: linear-gradient(
+                135deg, 
+                rgba(255,255,255,0) 30%, 
+                rgba(0, 255, 255, 0.25) 50%, 
+                rgba(255, 0, 255, 0.25) 70%, 
+                rgba(255,255,255,0) 100%
+            );
+            background-size: 200% 200%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 2;
+            animation: foil-shine 4s infinite linear;
+            mix-blend-mode: screen;
+        }
+        @keyframes foil-shine {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
 
         .col-content:not(#list-Cards):not(#list-Leader):not(#list-Base) .card-item:not(:first-child) { margin-top: -160px; }
         .col-content:hover .card-item:not(:first-child) { margin-top: -115px; }
@@ -340,7 +369,7 @@
     <header>
         <div class="header-content">
             <div class="left-group">
-                <h1>SEALED BUILDER</h1>
+                <h1>SWU SEALED BUILDER</h1>
                 <div class="sub-stat">STATUS: <span id="db-status">DB: 0</span> | CARDS: <span id="s-total" style="color:#fff;">0</span></div>
             </div>
 
@@ -575,10 +604,18 @@ function parseCSVandInstall(csvText) {
         const img = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}.png`;
         
         let simpleType = "Unit";
-        if(typeRaw.includes('Leader')) simpleType = "Leader";
-        else if(typeRaw.includes('Base')) simpleType = "Base";
-        else if(typeRaw.includes('Event')) simpleType = "Event";
-        else if(typeRaw.includes('Upgrade')) simpleType = "Upgrade";
+        
+        // --- PALPATINE & JABBA FIX ---
+        if (name.includes('Emperor Palpatine') && setCode === 'SOR' && intId === 135) {
+            simpleType = "Leader";
+        } else if (name.includes('Jabba the Hutt') && setCode === 'SEC') {
+            simpleType = "Leader";
+        } else {
+            if(typeRaw.includes('Leader')) simpleType = "Leader";
+            else if(typeRaw.includes('Base')) simpleType = "Base";
+            else if(typeRaw.includes('Event')) simpleType = "Event";
+            else if(typeRaw.includes('Upgrade')) simpleType = "Upgrade";
+        }
         
         let arena = "None";
         if(arenaRaw.includes("Ground")) arena = "Ground";
@@ -589,7 +626,7 @@ function parseCSVandInstall(csvText) {
         if(!db[setCode]) db[setCode] = {leaders:[], bases:[], deck:[]};
         
         if(simpleType === 'Leader') { 
-            if(setCode === 'TWI' || setCode === 'SOR' || setCode === 'SHD' || setCode === 'JTL') {
+            if(setCode === 'TWI' || setCode === 'SOR' || setCode === 'SHD' || setCode === 'SEC' || setCode === 'LOF' || setCode === 'JTL') {
                 cardObj.back = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}-portrait.png`;
             } else {
                 cardObj.back = `https://swudb.com/cdn-cgi/image/quality=95/images/cards/${setCode}/${id}-back.png`; 
@@ -785,7 +822,7 @@ function initBoard() {
         let hc = "ch-cost";
         if(cn==="Leader") hc="ch-Leader"; 
         else if(cn==="Base") hc="ch-Base"; 
-        else if(cn==="Cards") hc="ch-Cards";
+        else if(cn==="Cards") hc="ch-Pool";
         else if(ASPECT_COLS.includes(cn)) hc=`ch-${cn}`;
         else if(RARITY_COLS.includes(cn)) hc=`ch-${cn}`;
         else if(cn==="Neutral") hc="ch-Neutral";
@@ -881,7 +918,6 @@ function updateSidebar() {
     let groundCount = 0;
     let spaceCount = 0;
 
-    // SORTED DECK LIST (Cost -> Name)
     Object.values(myDeck).sort((a,b) => {
         let cA = parseInt(a.cost)||0; let cB = parseInt(b.cost)||0;
         if(cA!==cB) return cA-cB;
